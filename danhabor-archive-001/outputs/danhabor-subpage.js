@@ -63,6 +63,11 @@
     document.querySelector("#record-image-url").value = record?.image?.startsWith("data:") ? "" : (record?.image || "");
     document.querySelector("#record-link").value = record?.link || "";
     document.querySelector("#record-image-file").value = "";
+    const removeImage = document.querySelector("#record-remove-image");
+    if (removeImage) {
+      removeImage.checked = false;
+      removeImage.disabled = !record?.image;
+    }
     document.querySelector("#delete-record").hidden = !record;
     dialog.showModal();
   }
@@ -125,13 +130,14 @@
     const existing = records.find((item) => item.id === editingId);
     try {
       const uploaded = await readImage(document.querySelector("#record-image-file").files[0]);
+      const removeImage = Boolean(document.querySelector("#record-remove-image")?.checked);
       const record = {
         id: existing?.id || `record-${Date.now()}`,
         code: document.querySelector("#record-code").value.trim(),
         title: document.querySelector("#record-title").value.trim(),
         subtitle: document.querySelector("#record-subtitle").value.trim(),
         body: document.querySelector("#record-body").value.trim(),
-        image: uploaded || document.querySelector("#record-image-url").value.trim() || existing?.image || "",
+        image: removeImage ? "" : (uploaded || document.querySelector("#record-image-url").value.trim() || existing?.image || ""),
         link: document.querySelector("#record-link").value.trim()
       };
       records = existing ? records.map((item) => item.id === editingId ? record : item) : [...records, record];

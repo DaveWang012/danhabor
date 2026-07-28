@@ -6,7 +6,7 @@
     <meta name="description" content="丹芷（丹港）世界观百科" />
     <title>丹芷百科 | 丹港风云录世界观</title>
     <script src="./danhabor-shell-redirect.js"></script>
-    <link rel="stylesheet" href="./danhabor-music-player.css?v=20260722-2" />
+    <link rel="stylesheet" href="./danhabor-music-player.css?v=20260726-1" />
     <style>
       :root {
         --bg: #05090c;
@@ -97,10 +97,20 @@
       .entry-copy { margin-top: 17px; color: #d4d7d9; font-size: 16px; line-height: 1.9; }
       .entry-copy p { margin: 0 0 16px; }
       .entry-copy p:last-child { margin-bottom: 0; }
+      .entry-media-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+        gap: 14px;
+        width: min(100%, 960px);
+        margin: 0 0 20px;
+        align-items: start;
+      }
+      .entry-media-row.after-paragraph { margin-top: 6px; }
+      .entry-media-row.at-end { margin-top: 22px; margin-bottom: 4px; }
       .entry-media {
         position: relative;
-        width: min(100%, 720px);
-        margin: 24px 0 4px;
+        width: 100%;
+        margin: 0;
         border: 1px solid #46535d;
         background: #070d11;
         overflow: hidden;
@@ -159,10 +169,39 @@
       .editor { padding: 24px; }
       .editor h2 { margin: 0 0 20px; font-size: 23px; }
       .field { display: grid; gap: 7px; margin-bottom: 16px; color: #c8cdd0; font-size: 14px; }
-      .field input, .field textarea { width: 100%; border: 1px solid #58636c; color: #eef1f2; background: #070d11; outline: none; }
+      .field input, .field textarea, .field select { width: 100%; border: 1px solid #58636c; color: #eef1f2; background: #070d11; outline: none; }
       .field input { height: 42px; padding: 0 10px; }
+      .field select { height: 42px; padding: 0 10px; }
       .field textarea { min-height: 240px; padding: 10px; resize: vertical; line-height: 1.65; }
       .field textarea.compact { min-height: 110px; }
+      .section-image-editor {
+        display: grid; gap: 10px; margin: 0 0 16px;
+      }
+      .section-image-editor:empty::before {
+        content: "本小节尚未添加图片。新图片默认显示在正文第一行。";
+        padding: 12px; border: 1px dashed #4c5962; color: #849099; background: #080f14;
+      }
+      .section-image-editor-row {
+        display: grid; grid-template-columns: 112px minmax(180px, 1fr) auto;
+        gap: 10px; align-items: center; padding: 9px;
+        border: 1px solid #46535d; background: #080f14;
+      }
+      .section-image-editor-row img {
+        display: block; width: 112px; height: 72px; object-fit: cover;
+        border: 1px solid #58636c; background: #05090c;
+      }
+      .section-image-editor-row select {
+        width: 100%; height: 40px; padding: 0 9px;
+        border: 1px solid #58636c; color: #eef1f2; background: #070d11;
+      }
+      .section-image-editor-row button {
+        min-height: 40px; padding: 0 12px; border: 1px solid #76433f;
+        color: #d9b5b1; background: #25100f; cursor: pointer;
+      }
+      .new-image-grid {
+        display: grid; grid-template-columns: minmax(0, 1fr) 190px;
+        gap: 10px; align-items: end;
+      }
       .remove-image-option { display: flex; align-items: center; gap: 9px; margin: -4px 0 16px; color: #d9b5b1; font-size: 14px; }
       .remove-image-option input { width: 16px; height: 16px; accent-color: #76433f; }
       .info-editor-row {
@@ -193,6 +232,10 @@
         .article-body { grid-column: 2; }
       }
       @media (max-width: 720px) {
+        .section-image-editor-row { grid-template-columns: 82px 1fr; }
+        .section-image-editor-row img { width: 82px; height: 58px; }
+        .section-image-editor-row button { grid-column: 1 / -1; }
+        .new-image-grid { grid-template-columns: 1fr; }
         .site-header { padding: 18px; }
         .brand strong { font-size: 25px; }
         .article-head, .wiki-grid { width: calc(100% - 28px); }
@@ -237,9 +280,16 @@
         <h2 id="editor-title">编辑条目</h2>
         <label class="field">标题<input id="entry-title" required /></label>
         <label class="field">正文<textarea id="entry-body" placeholder="段落之间请空一行" required></textarea></label>
-        <label class="field">图片链接（可选）<input id="entry-image-url" type="url" placeholder="https://..." /></label>
-        <label class="field">上传条目图片<input id="entry-image-file" type="file" accept="image/*" /></label>
-        <label class="remove-image-option" id="remove-entry-image-row"><input id="remove-entry-image" type="checkbox" />移除当前图片</label>
+        <h3>图片与文字排版</h3>
+        <div class="section-image-editor" id="entry-images-editor"></div>
+        <div class="new-image-grid">
+          <label class="field">新增图片链接（可选）<input id="entry-image-url" type="url" placeholder="https://..." /></label>
+          <label class="field">链接图片位置<select id="entry-image-url-position"></select></label>
+        </div>
+        <div class="new-image-grid">
+          <label class="field">上传图片（可多选）<input id="entry-image-file" type="file" accept="image/*" multiple /></label>
+          <label class="field">上传图片位置<select id="entry-image-file-position"></select></label>
+        </div>
         <div class="editor-actions"><button class="danger" id="delete-entry" type="button">删除条目</button><div class="action-group"><button id="cancel-editor" type="button">取消</button><button class="primary" type="submit">保存</button></div></div>
       </form>
     </dialog>
@@ -306,6 +356,7 @@
       let editingPageId = null;
       let pendingImageId = null;
       let infoDraft = [];
+      let entryImagesDraft = [];
 
       function clone(value) { return JSON.parse(JSON.stringify(value)); }
       function escapeHtml(value) {
@@ -332,6 +383,40 @@
         }];
       }
       function currentPage() { return pages.find((page) => page.id === currentPageId) || pages[0]; }
+      function normalizeSectionImages(section) {
+        if (Array.isArray(section.images)) {
+          return section.images
+            .filter((item) => item && (typeof item === "string" || item.src))
+            .map((item) => typeof item === "string" ? { src: item, position: "top" } : {
+              src: item.src,
+              position: item.position || "top"
+            });
+        }
+        return section.image ? [{ src: section.image, position: "top" }] : [];
+      }
+      function paragraphPositionOptions(body, selected = "top") {
+        const count = Math.max(1, String(body || "").split(/\n\s*\n/).filter(Boolean).length);
+        const options = [
+          { value: "top", label: "正文前（小节第一行）" },
+          ...Array.from({ length: count }, (_, index) => ({
+            value: `after-${index + 1}`,
+            label: `第 ${index + 1} 段文字后`
+          })),
+          { value: "end", label: "正文末尾" }
+        ];
+        return options.map((item) => `<option value="${item.value}"${item.value === selected ? " selected" : ""}>${item.label}</option>`).join("");
+      }
+      function renderMediaGroup(section, images, className = "") {
+        if (!images.length) return "";
+        return `<div class="entry-media-row ${className}">${images.map(({ item, imageIndex }) => `
+          <div class="entry-media">
+            <img class="entry-image" src="${escapeHtml(item.src)}" alt="${escapeHtml(section.title)}配图 ${imageIndex + 1}" />
+            <div class="entry-image-actions">
+              <button type="button" data-upload-image="${escapeHtml(section.id)}" data-image-index="${imageIndex}">替换图片</button>
+              <button class="remove-image" type="button" data-remove-image="${escapeHtml(section.id)}" data-image-index="${imageIndex}">移除</button>
+            </div>
+          </div>`).join("")}</div>`;
+      }
       function savePages(message = "百科内容已保存在当前浏览器。") {
         const payload = JSON.stringify(pages);
         const legacySections = localStorage.getItem(LEGACY_SECTIONS_KEY);
@@ -365,6 +450,21 @@
         currentPage().sections = sections;
         return savePages();
       }
+      function migrateSectionImageLayouts() {
+        let changed = false;
+        for (const page of pages) {
+          for (const section of page.sections || []) {
+            if (section.imageLayoutVersion === 2) continue;
+            section.images = normalizeSectionImages(section).map((item) => ({ ...item, position: "top" }));
+            section.imageLayoutVersion = 2;
+            delete section.image;
+            changed = true;
+          }
+        }
+        if (changed) {
+          try { localStorage.setItem(PAGES_KEY, JSON.stringify(pages)); } catch {}
+        }
+      }
       function showStatus(message) {
         status.textContent = message; status.hidden = false; clearTimeout(status.timer);
         status.timer = setTimeout(() => { status.hidden = true; }, 2500);
@@ -378,11 +478,18 @@
       function renderSections() {
         tocList.innerHTML = sections.map((section, index) => `<li><a href="#${escapeHtml(section.id)}">${index + 1}. ${escapeHtml(section.title)}</a></li>`).join("");
         entries.innerHTML = sections.map((section, index) => {
-          const paragraphs = section.body.split(/\n\s*\n/).map((p) => `<p>${escapeHtml(p).replace(/\n/g, "<br>")}</p>`).join("");
-          const media = section.image
-            ? `<div class="entry-media"><img class="entry-image" src="${escapeHtml(section.image)}" alt="${escapeHtml(section.title)}配图" /><div class="entry-image-actions"><button type="button" data-upload-image="${escapeHtml(section.id)}">替换图片</button><button class="remove-image" type="button" data-remove-image="${escapeHtml(section.id)}">移除</button></div></div>`
-            : "";
-          return `<section class="entry" id="${escapeHtml(section.id)}"><div class="entry-heading"><h2>${index + 1}. ${escapeHtml(section.title)}</h2><button class="edit-link" type="button" data-edit="${escapeHtml(section.id)}">[编辑]</button></div><div class="entry-copy">${paragraphs}${media}</div></section>`;
+          const imageItems = normalizeSectionImages(section).map((item, imageIndex) => ({ item, imageIndex }));
+          const topMedia = renderMediaGroup(section, imageItems.filter(({ item }) => item.position === "top"));
+          const endMedia = renderMediaGroup(section, imageItems.filter(({ item }) => item.position === "end"), "at-end");
+          const paragraphHtml = section.body.split(/\n\s*\n/).filter(Boolean).map((paragraph, paragraphIndex) => {
+            const afterMedia = renderMediaGroup(
+              section,
+              imageItems.filter(({ item }) => item.position === `after-${paragraphIndex + 1}`),
+              "after-paragraph"
+            );
+            return `<p>${escapeHtml(paragraph).replace(/\n/g, "<br>")}</p>${afterMedia}`;
+          }).join("");
+          return `<section class="entry" id="${escapeHtml(section.id)}"><div class="entry-heading"><h2>${index + 1}. ${escapeHtml(section.title)}</h2><button class="edit-link" type="button" data-edit="${escapeHtml(section.id)}">[编辑]</button></div><div class="entry-copy">${topMedia}${paragraphHtml}${endMedia}</div></section>`;
         }).join("");
       }
       function renderCurrentPage(updateUrl = false) {
@@ -408,12 +515,30 @@
         document.querySelector("#editor-title").textContent = section ? "编辑段落" : "新增段落";
         document.querySelector("#entry-title").value = section?.title || "";
         document.querySelector("#entry-body").value = section?.body || "";
-        document.querySelector("#entry-image-url").value = section?.image?.startsWith("http") ? section.image : "";
+        document.querySelector("#entry-image-url").value = "";
         document.querySelector("#entry-image-file").value = "";
-        document.querySelector("#remove-entry-image").checked = false;
-        document.querySelector("#remove-entry-image-row").hidden = !section?.image;
+        entryImagesDraft = clone(section ? normalizeSectionImages(section) : []);
+        renderEntryImagesEditor();
+        updateNewImagePositionOptions();
         document.querySelector("#delete-entry").hidden = !section;
         dialog.showModal();
+      }
+      function updateNewImagePositionOptions() {
+        const body = document.querySelector("#entry-body").value;
+        document.querySelector("#entry-image-url-position").innerHTML = paragraphPositionOptions(body, "top");
+        document.querySelector("#entry-image-file-position").innerHTML = paragraphPositionOptions(body, "top");
+      }
+      function renderEntryImagesEditor() {
+        const body = document.querySelector("#entry-body").value;
+        const editor = document.querySelector("#entry-images-editor");
+        editor.innerHTML = entryImagesDraft.map((item, index) => `
+          <div class="section-image-editor-row" data-entry-image-row="${index}">
+            <img src="${escapeHtml(item.src)}" alt="小节配图 ${index + 1}" />
+            <select data-entry-image-position="${index}" aria-label="图片 ${index + 1} 的展示位置">
+              ${paragraphPositionOptions(body, item.position || "top")}
+            </select>
+            <button type="button" data-remove-draft-image="${index}">移除</button>
+          </div>`).join("");
       }
       function compressImage(dataUrl) {
         return new Promise((resolve, reject) => {
@@ -461,10 +586,15 @@
             changed = true;
           }
           for (const section of page.sections || []) {
-            if (section.image?.startsWith("data:") && section.image.length > 420000) {
-              section.image = await compressImage(section.image);
-              changed = true;
+            const images = normalizeSectionImages(section);
+            for (const item of images) {
+              if (item.src?.startsWith("data:") && item.src.length > 420000) {
+                item.src = await compressImage(item.src);
+                changed = true;
+              }
             }
+            section.images = images;
+            delete section.image;
           }
         }
         if (changed && savePages("已有图片已自动优化。")) renderCurrentPage();
@@ -504,9 +634,23 @@
         const uploadId = event.target.closest("[data-upload-image]")?.dataset.uploadImage;
         const removeId = event.target.dataset.removeImage;
         if (editId) openEditor(editId);
-        if (uploadId) { pendingImageId = uploadId; quickImageInput.value = ""; quickImageInput.click(); }
+        if (uploadId) {
+          pendingImageId = {
+            sectionId: uploadId,
+            imageIndex: Number(event.target.closest("[data-upload-image]").dataset.imageIndex)
+          };
+          quickImageInput.value = "";
+          quickImageInput.click();
+        }
         if (removeId) {
-          sections = sections.map((item) => item.id === removeId ? { ...item, image: "" } : item);
+          const imageIndex = Number(event.target.dataset.imageIndex);
+          sections = sections.map((item) => {
+            if (item.id !== removeId) return item;
+            const images = normalizeSectionImages(item).filter((_, index) => index !== imageIndex);
+            const updated = { ...item, images };
+            delete updated.image;
+            return updated;
+          });
           if (saveSections()) renderSections();
         }
       });
@@ -514,10 +658,35 @@
         if (!pendingImageId || !event.target.files[0]) return;
         try {
           const image = await readImage(event.target.files[0]);
-          sections = sections.map((item) => item.id === pendingImageId ? { ...item, image } : item);
+          sections = sections.map((item) => {
+            if (item.id !== pendingImageId.sectionId) return item;
+            const images = normalizeSectionImages(item);
+            if (images[pendingImageId.imageIndex]) images[pendingImageId.imageIndex].src = image;
+            const updated = { ...item, images };
+            delete updated.image;
+            return updated;
+          });
           if (saveSections()) renderSections();
         } catch (error) { showStatus(error.message || "图片读取失败。"); }
         finally { pendingImageId = null; }
+      });
+      document.querySelector("#entry-body").addEventListener("input", () => {
+        entryImagesDraft = entryImagesDraft.map((item, index) => ({
+          ...item,
+          position: document.querySelector(`[data-entry-image-position="${index}"]`)?.value || item.position || "top"
+        }));
+        renderEntryImagesEditor();
+        updateNewImagePositionOptions();
+      });
+      document.querySelector("#entry-images-editor").addEventListener("change", (event) => {
+        const index = Number(event.target.dataset.entryImagePosition);
+        if (Number.isInteger(index) && entryImagesDraft[index]) entryImagesDraft[index].position = event.target.value;
+      });
+      document.querySelector("#entry-images-editor").addEventListener("click", (event) => {
+        const index = Number(event.target.dataset.removeDraftImage);
+        if (!Number.isInteger(index)) return;
+        entryImagesDraft.splice(index, 1);
+        renderEntryImagesEditor();
       });
       document.querySelector("#add-entry").addEventListener("click", () => openEditor());
       document.querySelector("#add-top").addEventListener("click", () => openEditor());
@@ -532,12 +701,25 @@
         const title = document.querySelector("#entry-title").value.trim();
         const body = document.querySelector("#entry-body").value.trim();
         const imageUrl = document.querySelector("#entry-image-url").value.trim();
-        const file = document.querySelector("#entry-image-file").files[0];
-        const removeImage = document.querySelector("#remove-entry-image").checked;
+        const files = [...document.querySelector("#entry-image-file").files];
         const existing = sections.find((item) => item.id === editingId);
         try {
-          const uploaded = await readImage(file);
-          const updated = { id: existing?.id || `entry-${Date.now()}`, title, body, image: removeImage ? "" : (uploaded || imageUrl || existing?.image || "") };
+          const images = entryImagesDraft.map((item, index) => ({
+            src: item.src,
+            position: document.querySelector(`[data-entry-image-position="${index}"]`)?.value || item.position || "top"
+          }));
+          if (imageUrl) images.push({
+            src: imageUrl,
+            position: document.querySelector("#entry-image-url-position").value || "top"
+          });
+          for (const file of files) {
+            const uploaded = await readImage(file);
+            if (uploaded) images.push({
+              src: uploaded,
+              position: document.querySelector("#entry-image-file-position").value || "top"
+            });
+          }
+          const updated = { id: existing?.id || `entry-${Date.now()}`, title, body, images, imageLayoutVersion: 2 };
           sections = existing ? sections.map((item) => item.id === editingId ? updated : item) : [...sections, updated];
           if (saveSections()) { renderSections(); dialog.close(); }
         } catch (error) { showStatus(error.message || "图片读取失败。"); }
@@ -579,7 +761,7 @@
             latin: document.querySelector("#page-latin").value.trim(),
             image: uploaded || document.querySelector("#page-image-url").value.trim() || existing?.image || DEFAULT_IMAGE,
             info: infoDraft,
-            sections: existing?.sections || [{ id: `entry-${Date.now()}`, title: "概述", body: "请在这里补充这个词条的概述。", image: "" }]
+            sections: existing?.sections || [{ id: `entry-${Date.now()}`, title: "概述", body: "请在这里补充这个词条的概述。", images: [], imageLayoutVersion: 2 }]
           };
           pages = existing ? pages.map((item) => item.id === id ? page : item) : [...pages, page];
           currentPageId = id;
@@ -612,10 +794,11 @@
       });
       const now = new Date();
       document.querySelector("#earth-date").textContent = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+      migrateSectionImageLayouts();
       renderCurrentPage();
       if (location.hash) requestAnimationFrame(() => document.getElementById(location.hash.slice(1))?.scrollIntoView());
       compactStoredImages().catch(() => {});
     </script>
-    <script src="./danhabor-music-player.js?v=20260722-2"></script>
+    <script src="./danhabor-music-player.js?v=20260726-1"></script>
   </body>
 </html>

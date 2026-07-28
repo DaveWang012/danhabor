@@ -19,6 +19,15 @@
   transition: opacity 220ms ease, transform 220ms ease;
 }
 
+.danhabor-music-player.dmp-positioned {
+  right: auto;
+  bottom: auto;
+}
+
+.danhabor-music-player.dmp-dragging {
+  transition: none;
+}
+
 .danhabor-music-player.dmp-on-preview {
   top: max(12px, env(safe-area-inset-top));
   bottom: auto;
@@ -110,6 +119,14 @@
   grid-template-rows: auto auto;
   column-gap: 6px;
   align-items: center;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dmp-dragging .dmp-mini-readout {
+  cursor: grabbing;
 }
 
 .dmp-disc {

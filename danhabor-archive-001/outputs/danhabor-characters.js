@@ -4,8 +4,13 @@
   const deepClone = (value) => JSON.parse(JSON.stringify(value));
   const defaults = deepClone(window.DANHABOR_CHARACTER_DEFAULTS || []);
   const app = document.querySelector("#archive-app");
+  const archiveWorkspace = document.querySelector(".archive-workspace");
+  const archiveFolder = document.querySelector(".archive-folder");
+  const passport = document.querySelector("#passport");
+  const passportCover = document.querySelector("#passport-open");
   const passportIdentity = document.querySelector("#passport-identity");
   const passportLower = document.querySelector("#passport-lower");
+  const passportHinge = document.querySelector("#passport-hinge");
   const paperStack = document.querySelector("#paper-stack");
   const relatedList = document.querySelector("#related-list");
   const archiveStatus = document.querySelector("#archive-status");
@@ -20,6 +25,7 @@
   const lightboxImage = document.querySelector("#lightbox-image");
   const lightboxTitle = document.querySelector("#lightbox-title");
   const lightboxCaption = document.querySelector("#lightbox-caption");
+  const lightboxReplaceFile = document.querySelector("#lightbox-replace-file");
 
   let characters = loadCharacters();
   let currentIndex = Math.max(0, characters.findIndex((character) => character.id === readStorage(LAST_CHARACTER_KEY)));
@@ -35,6 +41,13 @@
   let imageX = 0;
   let imageY = 0;
   let dragStart = null;
+
+  const ARCHIVE_WIDTH = 1450;
+  const ARCHIVE_HEIGHT = 1080;
+  const ARCHIVE_VERTICAL_GUTTER = 40;
+  const DEFAULT_PASSPORT_COVER = "./danhabor-passport-cover.png";
+  const DEFAULT_LIN_VISA_PAGE = "./danhabor-passport-visa-page.png";
+  const ARCHIVE_PLACEHOLDER_IMAGE = "./danhabor-character-folder-empty.png";
 
   function readStorage(key) {
     try { return localStorage.getItem(key) || ""; }
@@ -93,17 +106,75 @@
     return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
   }
 
+  function updateArchiveScale() {
+    const availableWidth = Math.max(320, window.innerWidth - 24);
+    const scaleFactor = Math.min(1, availableWidth / ARCHIVE_WIDTH);
+    const scaledWidth = ARCHIVE_WIDTH * scaleFactor;
+    const scaledHeight = ARCHIVE_HEIGHT * scaleFactor;
+
+    archiveFolder.style.setProperty("--archive-scale", String(scaleFactor));
+    archiveWorkspace.style.width = `${scaledWidth}px`;
+    archiveWorkspace.style.height = `${scaledHeight + ARCHIVE_VERTICAL_GUTTER}px`;
+  }
+
   function portraitMarkup(character, className = "portrait-placeholder") {
     if (character.passportPhoto) {
-      return `<img src="${escapeHtml(character.passportPhoto)}" alt="${escapeHtml(character.name)}证件照" />`;
+      return `
+        <span class="${className}" aria-label="${escapeHtml(character.name)}照片占位">${escapeHtml(initials(character))}</span>
+        <img
+          src="${escapeHtml(character.passportPhoto)}"
+          data-image-initials="${escapeHtml(initials(character))}"
+          alt="${escapeHtml(character.name)}证件照"
+        />`;
     }
     return `<span class="${className}" aria-label="${escapeHtml(character.name)}照片占位">${escapeHtml(initials(character))}</span>`;
   }
 
+  function handleArchiveImageFailure(image) {
+    const fallbackSource = image.dataset.fallbackSrc || "";
+    if (fallbackSource && image.dataset.fallbackTried !== "true") {
+      image.dataset.fallbackTried = "true";
+      image.src = fallbackSource;
+      return;
+    }
+    image.hidden = true;
+  }
+
+  function installImageFallbacks(root) {
+    root.querySelectorAll("img[data-image-initials]").forEach((image) => {
+      if (image.complete && image.naturalWidth === 0) {
+        handleArchiveImageFailure(image);
+      }
+    });
+  }
+
+  document.addEventListener(
+    "error",
+    (event) => {
+      const image = event.target;
+      if (
+        image instanceof HTMLImageElement &&
+        image.matches("img[data-image-initials]")
+      ) {
+        handleArchiveImageFailure(image);
+      }
+    },
+    true
+  );
+
   function renderPassport() {
     const character = currentCharacter();
+    const coverImage = character.passportCover || DEFAULT_PASSPORT_COVER;
+    const visaPageImage = typeof character.visaPageImage === "string"
+      ? character.visaPageImage
+      : character.id === "lin-haining" ? DEFAULT_LIN_VISA_PAGE : "";
+
     document.documentElement.style.setProperty("--page-accent", character.theme?.accent || "#a56c2c");
     document.querySelector("#cover-number").textContent = character.passportNumber || "UNFILED";
+    passportCover.classList.toggle("has-cover-image", Boolean(coverImage));
+    passportCover.style.backgroundImage = coverImage ? `url(${JSON.stringify(coverImage)})` : "";
+    passportLower.classList.toggle("has-visa-page-image", Boolean(visaPageImage));
+    passportLower.style.backgroundImage = visaPageImage ? `url(${JSON.stringify(visaPageImage)})` : "";
     const passportPhotoIndex = character.passportPhoto ? 0 : -1;
     passportIdentity.innerHTML = `
       <header class="passport-identity-header">
@@ -125,8 +196,13 @@
         ${identityField("签发 / ISSUE", character.issueDate)}
         ${identityField("有效期 / EXPIRY", character.expiryDate)}
       </dl>
-      <pre class="machine-code">${escapeHtml(character.machineReadableCode)}</pre>
-      <button class="passport-close" type="button" data-close-passport aria-label="合上护照">×</button>`;
+      <div class="identity-issue-line">
+        <span>签发机构 / ISSUING AUTHORITY</span>
+        <strong>丹港管理委员会出入境事务局</strong>
+        <em>${escapeHtml(character.name)}</em>
+      </div>
+      <pre class="machine-code">${escapeHtml(character.machineReadableCode)}</pre>`;
+    installImageFallbacks(passportIdentity);
 
     const stamps = Array.isArray(character.stamps) ? character.stamps : [];
     passportLower.innerHTML = `
@@ -150,9 +226,20 @@
 
   function characterAvatar(character) {
     if (character.avatar || character.passportPhoto) {
-      return `<img src="${escapeHtml(character.avatar || character.passportPhoto)}" alt="${escapeHtml(character.name)}头像" />`;
+      const imageSource = character.avatar || character.passportPhoto;
+      const fallbackSource = character.avatar && character.passportPhoto && character.avatar !== character.passportPhoto
+        ? character.passportPhoto
+        : "";
+      return `
+        <span class="related-avatar-fallback">${escapeHtml(initials(character))}</span>
+        <img
+          src="${escapeHtml(imageSource)}"
+          data-fallback-src="${escapeHtml(fallbackSource)}"
+          data-image-initials="${escapeHtml(initials(character))}"
+          alt="${escapeHtml(character.name)}头像"
+        />`;
     }
-    return escapeHtml(initials(character));
+    return `<span class="related-avatar-fallback">${escapeHtml(initials(character))}</span>`;
   }
 
   function renderRelatedCharacters() {
@@ -166,6 +253,7 @@
         <span class="related-avatar">${characterAvatar(item)}</span>
         <span>${escapeHtml(item.name)}</span>
       </button>`).join("");
+    installImageFallbacks(relatedList);
   }
 
   function renderPaperStack({ reveal = true } = {}) {
@@ -174,11 +262,22 @@
     const organizations = Array.isArray(character.organizations) ? character.organizations : [];
     const timeline = Array.isArray(character.timeline) ? character.timeline : [];
     const gallery = Array.isArray(character.gallery) ? character.gallery : [];
-    const objects = Array.isArray(character.relatedObjects) ? character.relatedObjects : [];
-    const customSections = Array.isArray(character.customPaperSections)
-      ? character.customPaperSections.filter((section) => section.visible !== false)
-      : [];
     const galleryOffset = character.passportPhoto ? 1 : 0;
+    const pocketImages = Array.from({ length: 4 }, (_, index) => gallery[index] || null);
+    const photoSlots = pocketImages.map((image, index) => {
+      if (!image) {
+        return `<button class="archive-photo archive-photo-empty" type="button" data-lightbox-index="${galleryOffset + index}" aria-label="打开第${index + 1}张资料照片位置">
+          <img src="${ARCHIVE_PLACEHOLDER_IMAGE}" alt="" loading="lazy" />
+        </button>`;
+      }
+      return `<button class="archive-photo" type="button" data-lightbox-index="${galleryOffset + index}" aria-label="放大${escapeHtml(image.title || "资料图片")}">
+        <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.title || "资料图片")}" loading="lazy" />
+      </button>`;
+    }).join("");
+    const photoCaptions = pocketImages.map((image, index) => `<span>
+      <strong>${escapeHtml(image?.title || `资料位置 ${String(index + 1).padStart(2, "0")}`)}</strong>
+      <small>${escapeHtml(image?.caption || image?.year || "点击上方位置添加图片与说明")}</small>
+    </span>`).join("");
 
     paperStack.classList.remove("is-visible");
     paperStack.innerHTML = `
@@ -193,26 +292,15 @@
           <h2>重要节点 <small>TIMELINE</small></h2>
           <div class="timeline-list">${timeline.map((item) => `<div class="timeline-row"><time>${escapeHtml(item.date)}</time><span>${escapeHtml(item.text)}</span></div>`).join("") || "<p>暂无记录</p>"}</div>
         </section>
-        <div class="paper-lower">
-          <section class="paper-card paper-gallery" style="--paper-index:4">
-            <h2>相关影像 <small>VISUAL RECORDS</small></h2>
-            <div class="gallery-list">${gallery.map((image, index) => `
-              <button class="archive-photo" type="button" data-lightbox-index="${galleryOffset + index}" aria-label="放大${escapeHtml(image.title || "资料图片")}">
-                <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.title || "资料图片")}" loading="lazy" />
-                <span>${escapeHtml(image.title || "未命名影像")}</span>
-              </button>`).join("") || "<p>暂无可公开影像</p>"}</div>
-          </section>
-          <section class="paper-card" style="--paper-index:5">
-            <h2>相关物件 <small>RELATED OBJECTS</small></h2>
-            <ul class="object-list">${objects.map((object) => `<li>${escapeHtml(object.title)}<small>${escapeHtml(object.note || "")}</small></li>`).join("") || "<li>暂无登记物件</li>"}</ul>
-          </section>
+      </div>
+      <section class="archive-pocket" aria-label="相关影像收纳袋">
+        <div class="archive-pocket-photos">
+          <p>相关影像 <small>VISUAL RECORDS</small></p>
+          <div class="gallery-list">${photoSlots}</div>
         </div>
-        ${customSections.map((section, index) => `
-          <section class="paper-card custom-paper" style="--paper-index:${6 + index}" ${section.clickable ? `data-paper-detail="${escapeHtml(section.id)}" tabindex="0"` : ""}>
-            <h2>${escapeHtml(section.title)} <small>${escapeHtml(section.icon || "CUSTOM FILE")}</small></h2>
-            <p>${escapeHtml(section.body)}</p>
-          </section>`).join("")}
-      </div>`;
+        <div class="archive-pocket-captions">${photoCaptions}</div>
+        <span class="archive-pocket-reel" aria-hidden="true"></span>
+      </section>`;
     if (reveal) {
       requestAnimationFrame(() => requestAnimationFrame(() => {
         if (token === paperRenderToken && state !== "passportClosed" && state !== "passportClosing") paperStack.classList.add("is-visible");
@@ -292,9 +380,83 @@
     const character = currentCharacter();
     lightboxItems = [];
     if (character.passportPhoto) {
-      lightboxItems.push({ src: character.passportPhoto, title: `${character.name}证件照`, year: character.issueDate, caption: `${character.passportNumber} / ${character.region}` });
+      lightboxItems.push({ src: character.passportPhoto, title: `${character.name}证件照`, year: character.issueDate, caption: `${character.passportNumber} / ${character.region}`, kind: "passport" });
     }
-    if (Array.isArray(character.gallery)) lightboxItems.push(...character.gallery.filter((item) => item.src));
+    const gallery = Array.isArray(character.gallery) ? character.gallery : [];
+    for (let index = 0; index < 4; index += 1) {
+      const item = gallery[index];
+      lightboxItems.push(item?.src
+        ? { ...item, kind: "gallery", galleryIndex: index }
+        : {
+            src: ARCHIVE_PLACEHOLDER_IMAGE,
+            title: `未归档影像位置 ${String(index + 1).padStart(2, "0")}`,
+            caption: "使用“替换图片”装入资料图与说明。",
+            kind: "gallery",
+            galleryIndex: index,
+            placeholder: true
+          });
+    }
+  }
+
+  function imageFileToDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      if (!file?.type?.startsWith("image/")) return reject(new Error("invalid image"));
+      const image = new Image();
+      const objectUrl = URL.createObjectURL(file);
+      image.onload = () => {
+        const maxSize = 1600;
+        const scale = Math.min(1, maxSize / Math.max(image.naturalWidth, image.naturalHeight));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+        const context = canvas.getContext("2d");
+        context.fillStyle = "#ded2b8";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(objectUrl);
+        resolve(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      image.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error("image load failed"));
+      };
+      image.src = objectUrl;
+    });
+  }
+
+  async function replaceLightboxImage(file) {
+    if (!file) return;
+    const character = currentCharacter();
+    const item = lightboxItems[lightboxIndex];
+    if (!item) return;
+    const snapshot = deepClone(character);
+    try {
+      const src = await imageFileToDataUrl(file);
+      if (item.kind === "passport") {
+        character.passportPhoto = src;
+      } else {
+        character.gallery = Array.isArray(character.gallery) ? character.gallery : [];
+        const previous = character.gallery[item.galleryIndex] || {};
+        character.gallery[item.galleryIndex] = {
+          ...previous,
+          src,
+          title: previous.title || file.name.replace(/\.[^.]+$/, "") || `资料图片 ${item.galleryIndex + 1}`,
+          caption: previous.caption || "由本地资料图片替换。",
+          year: previous.year || new Date().getFullYear().toString()
+        };
+      }
+      if (!saveCharacters("图片已替换并保存到当前浏览器。")) {
+        characters[currentIndex] = snapshot;
+        return;
+      }
+      renderCharacter();
+      updateLightboxItems();
+      updateLightbox();
+    } catch {
+      showToast("无法读取该图片，请换一张尺寸较小的 JPG 或 PNG。");
+    } finally {
+      lightboxReplaceFile.value = "";
+    }
   }
 
   function openLightbox(index) {
@@ -382,18 +544,62 @@
   }
 
   function fillEditor(character) {
-    const simpleFields = ["id", "name", "foreignName", "gender", "birthDate", "birthPlace", "nationality", "region", "occupation", "passportPhoto", "avatar", "passportNumber", "issueDate", "expiryDate", "machineReadableCode", "summary", "experience"];
+    const simpleFields = ["id", "name", "foreignName", "gender", "birthDate", "birthPlace", "nationality", "region", "occupation", "passportPhoto", "avatar", "passportCover", "visaPageImage", "passportNumber", "issueDate", "expiryDate", "machineReadableCode", "summary", "experience"];
     simpleFields.forEach((key) => { if (form.elements[key]) form.elements[key].value = character[key] || ""; });
-    ["organizations", "timeline", "stamps", "gallery", "relatedObjects", "relatedCharacters", "customPaperSections"].forEach((key) => {
+    form.elements.themeAccent.value = character.theme?.accent || "#a56c2c";
+    form.elements.themeStamp.value = character.theme?.stamp || "#31576b";
+    ["organizations", "timeline", "stamps", "gallery", "relatedCharacters", "customPaperSections"].forEach((key) => {
       form.elements[key].value = JSON.stringify(character[key] || [], null, 2);
       form.elements[key].removeAttribute("aria-invalid");
     });
+    updateEditorMediaPreview("passportPhoto");
+    updateEditorMediaPreview("avatar");
+  }
+
+  function updateEditorMediaPreview(fieldName) {
+    const preview = form.querySelector(`[data-media-preview="${fieldName}"]`);
+    if (!preview) return;
+    const image = preview.querySelector("img");
+    const note = preview.querySelector("span");
+    const value = form.elements[fieldName]?.value.trim() || "";
+    const fallback = fieldName === "avatar" ? form.elements.passportPhoto?.value.trim() : "";
+    const source = value || fallback || "";
+    preview.classList.toggle("is-empty", !source);
+    image.removeAttribute("src");
+    if (source) image.src = source;
+    note.textContent = value
+      ? (value.startsWith("data:image/") ? "已载入本地图片，保存档案后将保留在当前浏览器。" : value)
+      : (fallback ? "当前头像沿用证件照。" : fieldName === "avatar" ? "未单独设置时将使用证件照。" : "尚未装入证件照。");
+  }
+
+  async function chooseEditorMedia(fieldName, file) {
+    if (!file) return;
+    const fileInput = form.querySelector(`[data-media-input="${fieldName}"]`);
+    try {
+      const src = await imageFileToDataUrl(file);
+      form.elements[fieldName].value = src;
+      currentCharacter()[fieldName] = src;
+      renderCharacter();
+      updateEditorMediaPreview("passportPhoto");
+      updateEditorMediaPreview("avatar");
+      showToast(`${fieldName === "passportPhoto" ? "证件照" : "头像"}已装入，点击“保存”写入浏览器。`);
+    } catch {
+      showToast("无法读取该图片，请选择 JPG、PNG 或 WebP 文件。");
+    } finally {
+      if (fileInput) fileInput.value = "";
+    }
   }
 
   function applyEditorPreview(target) {
     const character = currentCharacter();
     const key = target.name;
     if (!key) return;
+    if (key === "themeAccent" || key === "themeStamp") {
+      character.theme ||= {};
+      character.theme[key === "themeAccent" ? "accent" : "stamp"] = target.value;
+      renderCharacter();
+      return;
+    }
     if (target.matches("[data-json]")) {
       try {
         character[key] = JSON.parse(target.value || "[]");
@@ -406,6 +612,10 @@
       character[key] = target.value;
     }
     renderCharacter();
+    if (key === "passportPhoto" || key === "avatar") {
+      updateEditorMediaPreview("passportPhoto");
+      updateEditorMediaPreview("avatar");
+    }
   }
 
   function validateEditor() {
@@ -437,6 +647,8 @@
       foreignName: "NEW PERSONNEL",
       avatar: "",
       passportPhoto: "",
+      passportCover: DEFAULT_PASSPORT_COVER,
+      visaPageImage: "",
       passportNumber: `DG ${String(Date.now()).slice(-7)}`,
       summary: "待补充人物概述。",
       experience: "待补充经历摘要。",
@@ -507,6 +719,7 @@
   }
 
   document.querySelector("#passport-open").addEventListener("click", openPassport);
+  passportHinge.addEventListener("click", closePassport);
   document.querySelector("#previous-character").addEventListener("click", () => changeCharacter(currentIndex - 1));
   document.querySelector("#next-character").addEventListener("click", () => changeCharacter(currentIndex + 1));
   document.querySelector("#open-editor").addEventListener("click", () => openEditor());
@@ -518,7 +731,8 @@
   drawerScrim.addEventListener("click", () => closeEditor({ restore: true }));
 
   passportIdentity.addEventListener("click", (event) => {
-    if (event.target.closest("[data-close-passport]")) closePassport();
+    if (event.target.closest("button, a, input, select, textarea")) return;
+    closePassport();
   });
 
   relatedList.addEventListener("click", (event) => {
@@ -535,6 +749,14 @@
   document.addEventListener("click", (event) => {
     const imageButton = event.target.closest("[data-lightbox-index]");
     if (imageButton) openLightbox(Number(imageButton.dataset.lightboxIndex));
+    if (event.target.closest("[data-add-gallery]")) {
+      openEditor();
+      window.setTimeout(() => {
+        const galleryField = form.elements.gallery;
+        galleryField?.scrollIntoView({ block: "center", behavior: "smooth" });
+        galleryField?.focus();
+      }, 380);
+    }
   });
 
   search.addEventListener("change", () => {
@@ -550,6 +772,25 @@
   });
 
   form.addEventListener("input", (event) => applyEditorPreview(event.target));
+  form.addEventListener("click", (event) => {
+    const selectButton = event.target.closest("[data-select-media]");
+    if (selectButton) {
+      form.querySelector(`[data-media-input="${selectButton.dataset.selectMedia}"]`)?.click();
+      return;
+    }
+    const clearButton = event.target.closest("[data-clear-media]");
+    if (clearButton) {
+      const fieldName = clearButton.dataset.clearMedia;
+      form.elements[fieldName].value = "";
+      currentCharacter()[fieldName] = "";
+      renderCharacter();
+      updateEditorMediaPreview("passportPhoto");
+      updateEditorMediaPreview("avatar");
+    }
+  });
+  form.querySelectorAll("[data-media-input]").forEach((input) => {
+    input.addEventListener("change", (event) => chooseEditorMedia(input.dataset.mediaInput, event.target.files[0]));
+  });
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     if (!validateEditor()) return;
@@ -590,6 +831,8 @@
   document.querySelector("#lightbox-zoom-in").addEventListener("click", () => setImageScale(imageScale + 0.25));
   document.querySelector("#lightbox-zoom-out").addEventListener("click", () => setImageScale(imageScale - 0.25));
   document.querySelector("#lightbox-reset").addEventListener("click", resetImageTransform);
+  document.querySelector("#lightbox-replace").addEventListener("click", () => lightboxReplaceFile.click());
+  lightboxReplaceFile.addEventListener("change", (event) => replaceLightboxImage(event.target.files[0]));
   lightbox.addEventListener("click", (event) => { if (event.target === lightbox) closeLightbox(); });
   lightbox.addEventListener("close", () => document.body.classList.remove("is-lightbox-open"));
   lightboxStage.addEventListener("wheel", (event) => { event.preventDefault(); setImageScale(imageScale + (event.deltaY < 0 ? 0.15 : -0.15)); }, { passive: false });
@@ -617,5 +860,7 @@
     if (lightbox.open && event.key === "ArrowRight") stepLightbox(1);
   });
 
+  window.addEventListener("resize", updateArchiveScale, { passive: true });
+  updateArchiveScale();
   renderCharacter({ renderPapers: false });
 })();

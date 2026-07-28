@@ -162,6 +162,17 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.76); }
 .field input, .field textarea { width: 100%; border: 1px solid #56626a; color: #eef0ed; background: #060b0e; outline: none; }
 .field input { min-height: 42px; padding: 0 10px; }
 .field textarea { min-height: 170px; padding: 10px; resize: vertical; line-height: 1.65; }
+.field-checkbox {
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  cursor: pointer;
+}
+.field-checkbox input {
+  width: 16px;
+  min-height: 16px;
+  margin: 0;
+  accent-color: var(--amber);
+}
 .editor-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 22px; }
 .action-group { display: flex; gap: 9px; }
 .editor-actions button { min-height: 40px; padding: 0 14px; border: 1px solid #63707a; color: #e5e9eb; background: #101a21; cursor: pointer; }

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="与王海街联系" />
+    <title>和我聊聊 | 丹港档案馆</title>
+    <script src="./danhabor-shell-redirect.js"></script>
+    <link rel="stylesheet" href="./danhabor-music-player.css?v=20260726-1" />
+    <style>
+      *{box-sizing:border-box}body{min-height:100vh;margin:0;color:#d6d0bf;background:radial-gradient(circle at 50% 25%,#14201d,#040807 65%);font-family:"Songti SC",SimSun,serif}.bar{min-height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 max(22px,5vw);border-bottom:1px solid #3a3a30}.bar a{color:#a99871;text-decoration:none}.contact{width:min(920px,calc(100% - 32px));margin:8vh auto;padding:clamp(30px,6vw,72px);border:1px solid #685f49;background:repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0 1px,transparent 1px 5px),#0a1110;box-shadow:0 24px 70px #0008}.kicker{color:#9d8351;font:12px/1.5 "Courier New",monospace}.contact h1{margin:22px 0;font-size:clamp(44px,8vw,92px);font-weight:500}.contact>p{max-width:680px;color:#aaa28d;font-size:18px;line-height:2;white-space:pre-line}.channels{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:42px}.channels a{padding:20px;border:1px solid #544f40;color:#d4c9b0;text-decoration:none;background:#111713}.edit{margin-top:38px;padding:12px 18px;border:1px solid #76684c;color:#dfd2b6;background:#16150f;cursor:pointer}dialog{width:min(620px,calc(100% - 28px));padding:0;border:1px solid #75684c;color:#ddd3bc;background:#0c1210}dialog::backdrop{background:#000c}form{padding:24px}form h2{margin-top:0}label{display:grid;gap:6px;margin-bottom:14px}input,textarea{width:100%;border:1px solid #565044;color:#eee5d1;background:#050807}input{min-height:42px;padding:0 10px}textarea{min-height:150px;padding:10px;resize:vertical}footer{display:flex;justify-content:flex-end;gap:10px}footer button{min-height:40px;padding:0 14px;border:1px solid #6d634f;color:#ddd3bc;background:#171812;cursor:pointer}.primary{color:#191610;background:#c8b58c}@media(max-width:620px){.channels{grid-template-columns:1fr}}
+    </style>
+  </head>
+  <body data-page-key="chat">
+    <header class="bar"><strong>丹港档案馆 / CONTACT CHANNEL</strong><a href="./danhabor-001-preview.html">← 返回开场动画</a></header>
+    <main class="contact">
+      <p class="kicker">DNY AUTHOR CHANNEL / ACCESS OPEN</p>
+      <h1 id="chat-title"></h1>
+      <p id="chat-copy"></p>
+      <div class="channels" id="chat-channels"></div>
+      <button class="edit" id="edit-chat" type="button">编辑联系页面</button>
+    </main>
+    <dialog id="chat-editor">
+      <form id="chat-form">
+        <h2>编辑联系页面</h2>
+        <label>标题<input name="title" /></label>
+        <label>说明<textarea name="copy"></textarea></label>
+        <label>联系入口（JSON）<textarea name="channels"></textarea></label>
+        <footer><button id="cancel-chat" type="button">取消</button><button class="primary" type="submit">保存</button></footer>
+      </form>
+    </dialog>
+    <script>
+      (()=>{const k="danhabor.chat.v1",d={title:"和我聊聊",copy:"这里是创作者联系通道。你可以在编辑器中补充邮箱、社交主页或项目合作说明。",channels:[{label:"电子邮件",href:"mailto:"},{label:"作品主页",href:"./danhabor-001-preview.html?view=archive"}]};let s;try{s={...d,...JSON.parse(localStorage.getItem(k)||"{}")}}catch{s={...d}}const q=(x)=>document.querySelector(x),e=(v)=>String(v).replace(/[&<>\"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));function r(){q("#chat-title").textContent=s.title;q("#chat-copy").textContent=s.copy;q("#chat-channels").innerHTML=(s.channels||[]).map(x=>`<a href="${e(x.href||"#")}">${e(x.label||"联系入口")}</a>`).join("")}q("#edit-chat").onclick=()=>{q('[name="title"]').value=s.title;q('[name="copy"]').value=s.copy;q('[name="channels"]').value=JSON.stringify(s.channels,null,2);q("#chat-editor").showModal()};q("#cancel-chat").onclick=()=>q("#chat-editor").close();q("#chat-form").onsubmit=(v)=>{v.preventDefault();try{s={title:q('[name="title"]').value.trim(),copy:q('[name="copy"]').value.trim(),channels:JSON.parse(q('[name="channels"]').value||"[]")};localStorage.setItem(k,JSON.stringify(s));r();q("#chat-editor").close()}catch{alert("联系入口 JSON 格式有误。")}};r()})();
+    </script>
+    <script src="./danhabor-music-player.js?v=20260726-1"></script>
+  </body>
+</html>

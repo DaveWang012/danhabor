@@ -57,12 +57,18 @@
     muted: false,
     playMode: "loop",
     expanded: false,
+    position: null,
     savedAt: Date.now(),
   };
 
   const normalizeState = (candidate) => {
     const source = candidate && typeof candidate === "object" ? candidate : {};
     const trackExists = PLAYLIST.some((track) => track.id === source.currentTrackId);
+    const position = source.position
+      && Number.isFinite(Number(source.position.x))
+      && Number.isFinite(Number(source.position.y))
+      ? { x: Number(source.position.x), y: Number(source.position.y) }
+      : null;
     return {
       currentTrackId: trackExists ? source.currentTrackId : defaultState.currentTrackId,
       currentTime: Number.isFinite(Number(source.currentTime)) ? Math.max(0, Number(source.currentTime)) : 0,
@@ -71,6 +77,7 @@
       muted: Boolean(source.muted),
       playMode: ["loop", "one", "shuffle"].includes(source.playMode) ? source.playMode : "loop",
       expanded: Boolean(source.expanded),
+      position,
       savedAt: Number.isFinite(Number(source.savedAt)) ? Number(source.savedAt) : Date.now(),
     };
   };
@@ -115,7 +122,7 @@
     <div class="dmp-console">
       <div class="dmp-mini">
         <button class="dmp-button dmp-play" type="button" aria-label="播放背景音乐" title="播放背景音乐">▶</button>
-        <div class="dmp-mini-readout" aria-live="polite">
+        <div class="dmp-mini-readout" data-dmp-drag-handle aria-label="拖动音乐播放器" title="拖动音乐播放器" aria-live="polite">
           <i class="dmp-disc" aria-hidden="true"></i>
           <small class="dmp-label">GLOBAL ARCHIVE BGM</small>
           <strong class="dmp-title"></strong>
@@ -187,6 +194,7 @@
     muted: audio.muted,
     playMode: state.playMode,
     expanded: state.expanded,
+    position: state.position,
     savedAt: Date.now(),
   });
 
@@ -195,6 +203,67 @@
     try { localStorage.setItem(STORAGE_KEY, serialized); } catch {}
     try { window.name = `${WINDOW_NAME_PREFIX}${serialized}`; } catch {}
   };
+
+  const PLAYER_MARGIN = 8;
+  const clampPlayerPosition = ({ persist = false } = {}) => {
+    if (!state.position) return;
+    const rect = root.getBoundingClientRect();
+    const maxX = Math.max(PLAYER_MARGIN, window.innerWidth - rect.width - PLAYER_MARGIN);
+    const maxY = Math.max(PLAYER_MARGIN, window.innerHeight - rect.height - PLAYER_MARGIN);
+    const x = Math.min(maxX, Math.max(PLAYER_MARGIN, Number(state.position.x) || PLAYER_MARGIN));
+    const y = Math.min(maxY, Math.max(PLAYER_MARGIN, Number(state.position.y) || PLAYER_MARGIN));
+    state.position = { x, y };
+    root.style.left = `${x}px`;
+    root.style.top = `${y}px`;
+    root.style.right = "auto";
+    root.style.bottom = "auto";
+    root.classList.add("dmp-positioned");
+    if (persist) saveState();
+  };
+
+  const drag = {
+    active: false,
+    pointerId: null,
+    offsetX: 0,
+    offsetY: 0,
+  };
+
+  root.addEventListener("pointerdown", (event) => {
+    if (!event.target.closest("[data-dmp-drag-handle]")) return;
+    if (event.button !== undefined && event.button !== 0) return;
+    const rect = root.getBoundingClientRect();
+    drag.active = true;
+    drag.pointerId = event.pointerId;
+    drag.offsetX = event.clientX - rect.left;
+    drag.offsetY = event.clientY - rect.top;
+    root.classList.add("dmp-dragging");
+    root.setPointerCapture?.(event.pointerId);
+    event.preventDefault();
+  });
+
+  root.addEventListener("pointermove", (event) => {
+    if (!drag.active || event.pointerId !== drag.pointerId) return;
+    const rect = root.getBoundingClientRect();
+    const maxX = Math.max(PLAYER_MARGIN, window.innerWidth - rect.width - PLAYER_MARGIN);
+    const maxY = Math.max(PLAYER_MARGIN, window.innerHeight - rect.height - PLAYER_MARGIN);
+    state.position = {
+      x: Math.min(maxX, Math.max(PLAYER_MARGIN, event.clientX - drag.offsetX)),
+      y: Math.min(maxY, Math.max(PLAYER_MARGIN, event.clientY - drag.offsetY)),
+    };
+    clampPlayerPosition();
+  });
+
+  const finishDrag = (event) => {
+    if (!drag.active || event.pointerId !== drag.pointerId) return;
+    drag.active = false;
+    root.classList.remove("dmp-dragging");
+    root.releasePointerCapture?.(event.pointerId);
+    drag.pointerId = null;
+    clampPlayerPosition({ persist: true });
+  };
+
+  root.addEventListener("pointerup", finishDrag);
+  root.addEventListener("pointercancel", finishDrag);
 
   const setStatus = (message = "") => {
     elements.status.textContent = message;
@@ -236,6 +305,7 @@
     elements.expand.textContent = state.expanded ? "×" : "≡";
     elements.expand.setAttribute("aria-label", state.expanded ? "收起播放器" : "展开播放器");
     elements.expand.title = state.expanded ? "收起播放器" : "展开播放器";
+    window.requestAnimationFrame(() => clampPlayerPosition());
   };
 
   const updatePlaybackUi = () => {
@@ -462,6 +532,7 @@
   document.addEventListener("visibilitychange", () => { if (document.hidden) saveState(); });
   window.addEventListener("pagehide", saveState);
   window.addEventListener("beforeunload", saveState);
+  window.addEventListener("resize", () => clampPlayerPosition({ persist: true }));
 
   const openingVisibilityTimer = document.querySelector("#opening-intro")
     ? window.setInterval(updateVisibility, 300)
@@ -496,6 +567,7 @@
   updateMode();
   updatePlaybackUi();
   updateVisibility();
+  clampPlayerPosition();
   loadTrack(currentIndex, { autoplay: false, seek: state.currentTime });
   syncTrackForPage(requestedPage);
   if (state.isPlaying) {

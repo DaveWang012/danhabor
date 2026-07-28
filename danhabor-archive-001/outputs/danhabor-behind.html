@@ -3,18 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="《丹港风云录》幕后制作档案" />
-    <title>幕后制作 | 丹港风云录</title>
+    <meta name="description" content="《丹港风云录》制作花絮与创作过程档案" />
+    <title>制作花絮 | 丹港风云录</title>
     <script src="./danhabor-shell-redirect.js"></script>
-    <link rel="stylesheet" href="./danhabor-subpage.css" />
-    <link rel="stylesheet" href="./danhabor-music-player.css?v=20260722-2" />
+    <link rel="stylesheet" href="./danhabor-subpage.css?v=20260726-1" />
+    <link rel="stylesheet" href="./danhabor-music-player.css?v=20260726-1" />
   </head>
   <body data-page-key="behind">
-    <header class="site-header"><div class="brand"><strong>DNYTV1 ARCHIVE</strong><span>PRODUCTION RECORD SYSTEM</span></div><a class="back-link" href="./danhabor-001-preview.html?view=archive">← 返回档案室</a></header>
+    <header class="site-header"><div class="brand"><strong>DNYTV1 PRODUCTION ARCHIVE</strong><span>MAKING-OF RECORD SYSTEM</span></div><a class="back-link" href="./danhabor-001-preview.html?view=archive">← 返回档案室</a></header>
     <main>
-      <section class="hero"><div class="hero-image-actions"><button id="change-hero-image" type="button">更换背景</button><button id="reset-hero-image" type="button" hidden>恢复默认</button><input id="hero-image-input" type="file" accept="image/*" hidden /></div><div class="hero-copy"><p class="kicker">BEHIND / 幕后制作</p><h1>幕后制作</h1><p>从世界观手稿、角色草图到镜头生成、声音设计与最终剪辑，记录影像档案形成的过程。</p></div></section>
+      <section class="hero"><div class="hero-image-actions"><button id="change-hero-image" type="button">更换封面</button><button id="reset-hero-image" type="button" hidden>恢复默认</button><input id="hero-image-input" type="file" accept="image/*" hidden /></div><div class="hero-copy"><p class="kicker">PRODUCTION FILE / 制作花絮</p><h1>制作花絮</h1><p>从世界观手稿、角色草图到镜头生成、声音设计与最终剪辑，按制作阶段保存《丹港风云录》的图文记录。</p></div></section>
       <section class="archive-main">
-        <div class="archive-tools"><form class="search" id="search-form"><input id="record-search" type="search" placeholder="搜索制作阶段、工具或记录" aria-label="搜索幕后制作" /><button type="submit" aria-label="搜索">⌕</button></form><button class="add-record" id="add-record" type="button">新增制作记录</button></div>
+        <div class="archive-tools"><form class="search" id="search-form"><input id="record-search" type="search" placeholder="搜索制作阶段、工具或记录" aria-label="搜索制作花絮" /><button type="submit" aria-label="搜索">⌕</button></form><button class="add-record" id="add-record" type="button">新增图文记录</button></div>
         <div class="records" id="records"></div>
       </section>
     </main>
@@ -22,13 +22,14 @@
 
     <dialog id="record-dialog">
       <form class="editor" id="record-form">
-        <h2 id="editor-title">编辑制作记录</h2>
+        <h2 id="editor-title">编辑图文记录</h2>
         <label class="field">阶段编号<input id="record-code" required /></label>
         <label class="field">记录标题<input id="record-title" required /></label>
         <label class="field">制作阶段<input id="record-subtitle" required /></label>
-        <label class="field">制作说明<textarea id="record-body" required></textarea></label>
+        <label class="field">文字内容<textarea id="record-body" required></textarea></label>
         <label class="field">图片地址（可选）<input id="record-image-url" placeholder="https://... 或相对路径" /></label>
         <label class="field">或上传本地图片<input id="record-image-file" type="file" accept="image/*" /></label>
+        <label class="field field-checkbox"><input id="record-remove-image" type="checkbox" />移除当前图片</label>
         <label class="field">关联页面地址（可选）<input id="record-link" placeholder="https://..." /></label>
         <div class="editor-actions"><button class="danger" id="delete-record" type="button">删除</button><div class="action-group"><button id="cancel-editor" type="button">取消</button><button class="primary" type="submit">保存</button></div></div>
       </form>
@@ -41,6 +42,6 @@
       {"id":"behind-sound","code":"PROCESS / 04","title":"声音与档案质感","subtitle":"声音设计","body":"配乐、环境雨声、设备底噪和录像机操作音共同建立空间感，使观众像是在真实设备上调取影像。","image":"","link":""}
     ]</script>
     <script src="./danhabor-subpage.js"></script>
-    <script src="./danhabor-music-player.js?v=20260722-2"></script>
+    <script src="./danhabor-music-player.js?v=20260726-1"></script>
   </body>
 </html>

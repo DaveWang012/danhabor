@@ -6,7 +6,7 @@
     <title>丹港风云录 001 | DNYTV1 影像档案系统</title>
     <script src="./danhabor-shell-redirect.js"></script>
     <link rel="stylesheet" href="./danhabor-boarding-intro.css" />
-    <link rel="stylesheet" href="./danhabor-music-player.css?v=20260722-2" />
+    <link rel="stylesheet" href="./danhabor-music-player.css?v=20260726-1" />
     <script>
       if (new URLSearchParams(window.location.search).get("view") === "archive") {
         document.documentElement.classList.add("start-in-archive");
@@ -353,8 +353,8 @@
         width: 100%;
         height: 100%;
         display: block;
-        object-fit: contain;
-        background: #020304;
+        object-fit: cover;
+        background: #071116;
         cursor: pointer;
       }
 
@@ -376,7 +376,7 @@
       .screen-reserve::after {
         background:
           repeating-linear-gradient(103deg, rgba(202, 217, 215, 0.09) 0 1px, transparent 1px 11px),
-          linear-gradient(90deg, rgba(255,255,255,.055), transparent 16%, transparent 84%, rgba(255,255,255,.035));
+          linear-gradient(90deg, rgba(255,255,255,.04), transparent 18%, transparent 82%, rgba(255,255,255,.04));
         opacity: 0.42;
         animation: signalBreath 3.8s steps(2) infinite;
         z-index: 6;
@@ -384,15 +384,15 @@
 
       .screen-inner {
         position: absolute;
-        inset: 7.5% 7.2%;
+        inset: 0;
         display: grid;
         place-items: end center;
-        padding: 0 5% 5.5%;
-        border: 1px solid rgba(210, 200, 182, 0.12);
+        padding: 0 11.5% 10.5%;
+        border: 0;
         background:
           radial-gradient(circle at 50% 38%, rgba(74, 104, 111, 0.24), transparent 38%),
           repeating-linear-gradient(0deg, transparent 0 18px, rgba(255,255,255,.025) 19px),
-          rgba(2, 5, 7, 0.25);
+          transparent;
         z-index: 3;
         transition: opacity 0.28s ease;
       }
@@ -1601,7 +1601,7 @@ ARCHIVE // 63-92 ALT</p>
           <dl><dt>角色设计</dt><dd>个人手稿 / Ai辅助</dd></dl>
           <dl><dt>制作模型</dt><dd>Seedance2.0,<br />Gemini3.1Pro,<br />ChatGPT5.5.</dd></dl>
           <dl><dt>制作时间</dt><dd>2026.04</dd></dl>
-          <div class="detail-panel-preview">制作花絮预览 <span aria-hidden="true">▶</span></div>
+          <div class="detail-panel-preview">谁是王海街？ <span aria-hidden="true">▶</span></div>
         </section>
         <div class="archive-button-mask" aria-hidden="true"></div>
         <section class="screen-reserve" aria-label="电视机屏幕预留区">
@@ -1654,12 +1654,12 @@ ARCHIVE // 63-92 ALT</p>
         <button class="hotspot locked-right-1" type="button" aria-label="边缘证词 005"></button>
         <button class="hotspot locked-right-2" type="button" aria-label="沉默代码 006"></button>
         <button class="hotspot locked-right-3" type="button" aria-label="黑洲迷雾 007"></button>
-        <button class="hotspot behind-preview-hit" type="button" aria-label="制作花絮预览"></button>
+        <a class="hotspot behind-preview-hit" href="./danhabor-author.html" aria-label="打开王海街作者档案"></a>
 
         <a class="hotspot nav-hit case-hit" href="./danhabor-cases.html" aria-label="打开案件档案"></a>
         <a class="hotspot nav-hit character-hit" href="./danhabor-characters.html" aria-label="打开角色图鉴"></a>
         <a class="hotspot nav-hit world-hit" href="./danhabor-world.html" aria-label="打开世界观设定"></a>
-        <a class="hotspot nav-hit behind-hit" href="./danhabor-behind.html" aria-label="打开幕后制作"></a>
+        <a class="hotspot nav-hit behind-hit" href="./danhabor-author.html" aria-label="打开关于我"></a>
 
         <div id="toast" class="toast" hidden></div>
       </section>
@@ -1874,7 +1874,7 @@ ARCHIVE // 63-92 ALT</p>
       homeButton.addEventListener("click", openOpening);
       homeButton.addEventListener("click", () => window.DanhaborBoardingPass?.reset());
       document.querySelector(".opening-contact").addEventListener("click", () => {
-        openingContactStatus.textContent = "CONTACT CHANNEL / 待接入";
+        window.location.href = "./danhabor-chat.html";
       });
       updateOpeningSound();
       openingVideo.addEventListener("play", () => {
@@ -1953,26 +1953,6 @@ ARCHIVE // 63-92 ALT</p>
         volumeToggle.textContent = silent ? "SOUND" : "MUTE";
         volumeToggle.setAttribute("aria-label", silent ? "恢复声音" : "静音");
         volumeToggle.title = silent ? "恢复声音" : "静音";
-      };
-
-      const openFolder = () => {
-        document.querySelector(".folder")?.remove();
-        const folder = document.createElement("section");
-        folder.className = "folder";
-        folder.innerHTML = `
-          <button class="close" type="button" aria-label="关闭">×</button>
-          <div class="folder-paper">
-            <p>制作花絮预览 / PRODUCTION PROCESS</p>
-            <h2>丹港风云录 001 制作资料页</h2>
-            <div class="process-grid">
-              <article><span>01</span><h3>手绘草图</h3><p>角色轮廓、制服比例与丹港警务处视觉基调。</p></article>
-              <article><span>02</span><h3>AI 静态设定</h3><p>城市雨夜、港口结构、旧电视新闻质感的画面测试。</p></article>
-              <article><span>03</span><h3>最终影片镜头</h3><p>关键镜头生成、配乐、音效、字幕与剪辑合成。</p></article>
-            </div>
-          </div>
-        `;
-        stage.appendChild(folder);
-        folder.querySelector(".close").addEventListener("click", () => folder.remove());
       };
 
       const showVideo = () => {
@@ -2152,8 +2132,6 @@ ARCHIVE // 63-92 ALT</p>
         button.addEventListener("click", () => showToast("该录像尚未开放调取。"));
       });
 
-      document.querySelector(".behind-preview-hit").addEventListener("click", openFolder);
-
       const physicalButtonSound = (() => {
         let audioContext;
 
@@ -2260,6 +2238,6 @@ ARCHIVE // 63-92 ALT</p>
 
     </script>
     <script src="./danhabor-boarding-intro.js"></script>
-    <script src="./danhabor-music-player.js?v=20260722-2"></script>
+    <script src="./danhabor-music-player.js?v=20260726-1"></script>
   </body>
 </html>

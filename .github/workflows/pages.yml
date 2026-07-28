@@ -23,20 +23,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: danhabor-archive-001/package-lock.json
-      - name: Install dependencies
-        working-directory: danhabor-archive-001
-        run: npm ci
-      - name: Prepare shared video
-        run: cp assets/danhabor-001.mp4 danhabor-archive-001/public/assets/danhabor-001.mp4
-      - name: Build
-        working-directory: danhabor-archive-001
-        run: npm run build
+      - name: Prepare static site
+        run: |
+          mkdir -p _site
+          cp -R danhabor-archive-001/outputs _site/outputs
+          cp -R danhabor-archive-001/public _site/public
+          cp assets/danhabor-001.mp4 _site/public/assets/danhabor-001.mp4
+          cp danhabor-archive-001/pages-index.html _site/index.html
+          touch _site/.nojekyll
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
@@ -44,7 +38,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: danhabor-archive-001/dist
+          path: _site
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
