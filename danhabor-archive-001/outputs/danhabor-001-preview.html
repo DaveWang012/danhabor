@@ -1607,9 +1607,8 @@ ARCHIVE // 63-92 ALT</p>
         <section class="screen-reserve" aria-label="电视机屏幕预留区">
           <video
             class="archive-video"
-            preload="metadata"
+            preload="auto"
             playsinline
-            poster="../public/assets/danhabor-001-cover.jpg"
             aria-label="丹港风云录 001 正片"
           >
             <source src="../public/assets/danhabor-001.mp4" type="video/mp4" />
@@ -1792,12 +1791,24 @@ ARCHIVE // 63-92 ALT</p>
         updateOpeningSound();
       };
 
+      const rewindOpening = () => {
+        if (openingVideo.readyState === 0) {
+          openingVideo.load();
+          return;
+        }
+        try {
+          openingVideo.currentTime = 0;
+        } catch {
+          openingVideo.load();
+        }
+      };
+
       const beginOpening = async () => {
         stopBackgroundMusic();
         openingHasStarted = true;
         openingIntro.classList.remove("awaiting-entry", "is-title-phase", "is-landing");
         openingVideo.pause();
-        openingVideo.currentTime = 0;
+        rewindOpening();
         openingVideo.volume = 1;
         openingVideo.muted = false;
         openingProgressBar.style.width = "0%";
@@ -1818,7 +1829,7 @@ ARCHIVE // 63-92 ALT</p>
         openingContactStatus.textContent = "";
         openingProgressBar.style.width = "0%";
         openingPercent.textContent = "0%";
-        openingVideo.currentTime = 0;
+        rewindOpening();
         openingHasStarted = false;
         openingVideo.muted = false;
         updateOpeningSound();
@@ -1854,6 +1865,7 @@ ARCHIVE // 63-92 ALT</p>
       fitOpeningToVideo();
       const enterArchive = () => {
         closeOpening();
+        showFirstFrame();
         startBackgroundMusic();
       };
 
@@ -1959,6 +1971,28 @@ ARCHIVE // 63-92 ALT</p>
         screen.classList.add("has-video");
       };
 
+      const showFirstFrame = () => {
+        video.pause();
+        showVideo();
+
+        const seekToFirstFrame = () => {
+          try {
+            video.currentTime = 0.01;
+          } catch {
+            video.load();
+          }
+          updateTimeline();
+          updatePlayState();
+        };
+
+        if (video.readyState >= 1) {
+          seekToFirstFrame();
+        } else {
+          video.load();
+          video.addEventListener("loadedmetadata", seekToFirstFrame, { once: true });
+        }
+      };
+
       const playVideo = () => {
         stopBackgroundMusic();
         showVideo();
@@ -1974,13 +2008,13 @@ ARCHIVE // 63-92 ALT</p>
       };
 
       if (startInArchive) {
-        ejectVideo();
+        showFirstFrame();
         startBackgroundMusic();
       }
 
       window.addEventListener("pageshow", () => {
         if (startInArchive) {
-          ejectVideo();
+          showFirstFrame();
           startBackgroundMusic();
         }
       });
