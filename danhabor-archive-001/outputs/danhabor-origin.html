@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="《丹港风云录》最早期构想档案" />
+    <title>梦开始的地方 | 丹港风云录起源档案</title>
+    <script src="./danhabor-shell-redirect.js"></script>
+    <link rel="stylesheet" href="./danhabor-music-player.css?v=20260722-2" />
+    <style>
+      :root {
+        --ink: #d1c9b9;
+        --muted: #8f928a;
+        --red: #96372f;
+        --amber: #b0945d;
+        --line: rgba(193, 184, 166, 0.2);
+        --black: #040708;
+        --blue: #0c1820;
+      }
+
+      * { box-sizing: border-box; }
+
+      html { background: var(--black); }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--black);
+        font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", SimSun, serif;
+      }
+
+      a { color: inherit; }
+      button, input, textarea { font: inherit; }
+
+      .back-link {
+        position: fixed;
+        left: 28px;
+        top: 24px;
+        z-index: 20;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 42px;
+        padding: 0 15px;
+        border: 1px solid rgba(209, 201, 185, 0.35);
+        border-radius: 2px;
+        color: #ddd5c6;
+        background: rgba(4, 7, 8, 0.82);
+        text-decoration: none;
+        font-size: 14px;
+        transition: background 160ms ease, border-color 160ms ease;
+      }
+
+      .back-link:hover,
+      .back-link:focus-visible {
+        background: rgba(20, 25, 26, 0.96);
+        border-color: rgba(209, 201, 185, 0.66);
+      }
+
+      .edit-page-button {
+        position: fixed;
+        right: 28px;
+        top: 24px;
+        z-index: 20;
+        min-height: 42px;
+        padding: 0 16px;
+        border: 1px solid rgba(176, 148, 93, 0.55);
+        border-radius: 2px;
+        color: #d9c89f;
+        background: rgba(15, 14, 10, 0.86);
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .edit-page-button:hover,
+      .edit-page-button:focus-visible { background: rgba(38, 31, 19, 0.96); }
+
+      .hero {
+        position: relative;
+        min-height: 84vh;
+        display: flex;
+        align-items: flex-end;
+        overflow: hidden;
+        background: #071118 url("../public/assets/danhabor-001-cover.jpg") center / cover no-repeat;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(2, 6, 8, 0.38);
+        pointer-events: none;
+      }
+
+      .hero-copy {
+        position: relative;
+        z-index: 2;
+        width: min(1180px, calc(100% - 96px));
+        margin: 0 auto 7vh;
+      }
+
+      .archive-code {
+        margin: 0 0 16px;
+        color: var(--amber);
+        font-family: "Courier New", Courier, monospace;
+        font-size: 13px;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 760px;
+        margin: 0;
+        color: #e0d8c9;
+        font-size: 56px;
+        font-weight: 700;
+        line-height: 1.16;
+        letter-spacing: 0;
+        text-shadow: 0 3px 20px rgba(0, 0, 0, 0.75);
+      }
+
+      .hero-lede {
+        max-width: 680px;
+        margin: 24px 0 0;
+        color: rgba(224, 216, 201, 0.84);
+        font-size: 18px;
+        line-height: 1.8;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.84);
+      }
+
+      .file-band {
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        background: #090e10;
+      }
+
+      .file-meta {
+        width: min(1180px, calc(100% - 96px));
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .file-meta div {
+        min-height: 92px;
+        padding: 22px 24px;
+        border-left: 1px solid var(--line);
+      }
+
+      .file-meta div:last-child { border-right: 1px solid var(--line); }
+
+      .file-meta span {
+        display: block;
+        margin-bottom: 8px;
+        color: #6f746f;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 11px;
+      }
+
+      .file-meta strong {
+        color: #c8c0b1;
+        font-size: 15px;
+        font-weight: 500;
+      }
+
+      .origin {
+        background: #080c0e;
+      }
+
+      .origin-inner {
+        width: min(1080px, calc(100% - 96px));
+        margin: 0 auto;
+        padding: 108px 0 120px;
+      }
+
+      .section-kicker {
+        margin: 0 0 12px;
+        color: var(--red);
+        font-family: "Courier New", Courier, monospace;
+        font-size: 12px;
+      }
+
+      h2 {
+        margin: 0;
+        color: #d9d1c2;
+        font-size: 36px;
+        line-height: 1.3;
+        letter-spacing: 0;
+      }
+
+      .intro {
+        max-width: 760px;
+        margin: 24px 0 72px;
+        color: #a9a99f;
+        font-size: 17px;
+        line-height: 1.95;
+      }
+
+      .timeline {
+        border-top: 1px solid var(--line);
+      }
+
+      .moment {
+        display: grid;
+        grid-template-columns: 150px 260px 1fr;
+        gap: 34px;
+        padding: 38px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .moment time {
+        color: var(--amber);
+        font-family: "Courier New", Courier, monospace;
+        font-size: 12px;
+      }
+
+      .moment h3 {
+        margin: 0;
+        color: #cbc3b4;
+        font-size: 21px;
+        font-weight: 600;
+        letter-spacing: 0;
+      }
+
+      .moment p {
+        margin: 0;
+        color: #90948e;
+        font-size: 15px;
+        line-height: 1.9;
+      }
+
+      .thesis {
+        background: #111719;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .thesis-inner {
+        width: min(1080px, calc(100% - 96px));
+        margin: 0 auto;
+        padding: 92px 0;
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 72px;
+      }
+
+      .thesis-label {
+        color: var(--red);
+        font-family: "Courier New", Courier, monospace;
+        font-size: 12px;
+      }
+
+      .thesis p {
+        margin: 0;
+        color: #d3cbbb;
+        font-size: 28px;
+        line-height: 1.65;
+      }
+
+      footer {
+        background: #050809;
+      }
+
+      .footer-inner {
+        width: min(1080px, calc(100% - 96px));
+        margin: 0 auto;
+        padding: 56px 0 68px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .footer-inner p {
+        margin: 0;
+        color: #717670;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 12px;
+      }
+
+      .return-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 44px;
+        padding: 0 18px;
+        border: 1px solid rgba(150, 55, 47, 0.78);
+        border-radius: 2px;
+        color: #ddcfc1;
+        background: #29110f;
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      .return-button:hover,
+      .return-button:focus-visible { background: #381714; }
+
+      dialog {
+        width: min(940px, calc(100% - 32px));
+        max-height: calc(100vh - 40px);
+        padding: 0;
+        border: 1px solid rgba(193, 184, 166, 0.38);
+        color: var(--ink);
+        background: #090e10;
+      }
+
+      dialog::backdrop { background: rgba(0, 0, 0, 0.78); }
+
+      .page-editor { display: flex; max-height: calc(100vh - 42px); flex-direction: column; }
+      .editor-head,
+      .editor-actions {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 22px;
+        background: #0c1214;
+      }
+      .editor-head { border-bottom: 1px solid var(--line); }
+      .editor-head h2 { font-size: 22px; }
+      .editor-head button {
+        min-height: 36px; padding: 0 12px; border: 1px solid rgba(193, 184, 166, 0.3);
+        color: #cfc7b8; background: #111719; cursor: pointer;
+      }
+      .editor-scroll { overflow-y: auto; padding: 8px 22px 26px; }
+      .editor-section { padding: 24px 0; border-bottom: 1px solid var(--line); }
+      .editor-section:last-child { border-bottom: 0; }
+      .editor-section h3 { margin: 0 0 16px; color: var(--amber); font-size: 15px; font-weight: 500; }
+      .editor-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+      .editor-field { display: grid; gap: 7px; color: #979b94; font-size: 12px; }
+      .editor-field.wide { grid-column: 1 / -1; }
+      .editor-field input,
+      .editor-field textarea {
+        width: 100%;
+        border: 1px solid #485055;
+        color: #ded7c9;
+        background: #05090a;
+        outline: none;
+      }
+      .editor-field input { min-height: 40px; padding: 0 10px; }
+      .editor-field textarea { min-height: 112px; padding: 10px; resize: vertical; line-height: 1.65; }
+      .editor-field input:focus,
+      .editor-field textarea:focus { border-color: #8f7950; }
+      .meta-editor-row,
+      .moment-editor-row {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(193, 184, 166, 0.12);
+      }
+      .meta-editor-row { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr); }
+      .moment-editor-row { grid-template-columns: 130px minmax(160px, 0.8fr) minmax(260px, 2fr) 54px; align-items: end; }
+      .row-delete {
+        min-height: 40px;
+        border: 1px solid rgba(150, 55, 47, 0.6);
+        color: #d4aaa6;
+        background: #24100f;
+        cursor: pointer;
+      }
+      .editor-actions { border-top: 1px solid var(--line); }
+      .editor-actions-group { display: flex; gap: 10px; }
+      .editor-actions button,
+      .add-moment {
+        min-height: 40px;
+        padding: 0 15px;
+        border: 1px solid rgba(193, 184, 166, 0.34);
+        color: #d8d0c2;
+        background: #111719;
+        cursor: pointer;
+      }
+      .editor-actions .save-button { border-color: rgba(176, 148, 93, 0.72); background: #2b2416; }
+      .editor-actions .reset-button { color: #cfa8a3; border-color: rgba(150, 55, 47, 0.55); background: #21100f; }
+      .add-moment { width: 100%; color: var(--amber); border-style: dashed; }
+      .status {
+        position: fixed;
+        left: 50%;
+        bottom: 24px;
+        z-index: 50;
+        transform: translateX(-50%);
+        padding: 10px 16px;
+        border: 1px solid rgba(176, 148, 93, 0.6);
+        color: #e2dacb;
+        background: #15130d;
+      }
+
+      @media (max-width: 760px) {
+        .back-link { left: 14px; top: 14px; }
+        .edit-page-button { right: 14px; top: 14px; }
+        .hero { min-height: 82vh; }
+        .hero-copy,
+        .file-meta,
+        .origin-inner,
+        .thesis-inner,
+        .footer-inner { width: calc(100% - 36px); }
+        .hero-copy { margin-bottom: 42px; }
+        h1 { font-size: 36px; }
+        .hero-lede { font-size: 16px; }
+        .file-meta { grid-template-columns: repeat(2, 1fr); }
+        .file-meta div:nth-child(2) { border-right: 1px solid var(--line); }
+        .origin-inner { padding: 76px 0 84px; }
+        h2 { font-size: 28px; }
+        .intro { margin-bottom: 48px; }
+        .moment { grid-template-columns: 1fr; gap: 12px; padding: 30px 0; }
+        .thesis-inner { grid-template-columns: 1fr; gap: 24px; padding: 68px 0; }
+        .thesis p { font-size: 22px; }
+        .footer-inner { align-items: flex-start; flex-direction: column; }
+        .editor-grid,
+        .meta-editor-row,
+        .moment-editor-row { grid-template-columns: 1fr; }
+        .editor-field.wide { grid-column: auto; }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="back-link" href="./danhabor-001-preview.html?view=archive" title="返回丹港影像档案室">← 返回档案室</a>
+    <button class="edit-page-button" id="edit-page" type="button">编辑页面</button>
+
+    <main>
+      <section class="hero" aria-labelledby="origin-title">
+        <div class="hero-copy">
+          <p class="archive-code" id="archive-code">DNYTV1 / TAPE 002 / ORIGIN FILE</p>
+          <h1 id="origin-title">丹港风云录：梦开始的地方</h1>
+          <p class="hero-lede" id="hero-lede">在成为一盒可以播放的影像档案之前，丹港只是一个问题：如果城市的真相只能通过旧电视、遗失的编号和互相矛盾的证词被看见，人们会相信什么？</p>
+        </div>
+      </section>
+
+      <section class="file-band" aria-label="档案信息">
+        <div class="file-meta" id="file-meta"></div>
+      </section>
+
+      <section class="origin">
+        <div class="origin-inner">
+          <p class="section-kicker" id="section-kicker">DEVELOPMENT RECORD / 构想记录</p>
+          <h2 id="section-title">一座城市，先从一间录像档案室开始</h2>
+          <p class="intro" id="section-intro">《丹港风云录》最早并不是从完整剧情出发，而是从一种观看方式出发：观众不是在打开视频页面，而是在深夜进入丹芷电视台的内部资料室，亲手调取一盒不应公开的录像带。城市、案件和人物，都从这套旧电视系统里逐渐显影。</p>
+
+          <div class="timeline" id="timeline"></div>
+        </div>
+      </section>
+
+      <section class="thesis" aria-label="最初命题">
+        <div class="thesis-inner">
+          <div class="thesis-label" id="thesis-label">THE FIRST QUESTION</div>
+          <p id="thesis-text">丹港真正要追查的，从来不只是罪案，而是谁有权决定一段影像应当被保存、播放，还是永远从档案中消失。</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <p id="footer-note">DNYTV1 INTERNAL ARCHIVE / ACCESS LOGGED</p>
+      </div>
+    </footer>
+
+    <dialog id="page-editor-dialog">
+      <form class="page-editor" id="page-editor-form">
+        <div class="editor-head"><h2>编辑起源档案</h2><button id="close-editor" type="button" aria-label="关闭">关闭</button></div>
+        <div class="editor-scroll">
+          <section class="editor-section">
+            <h3>首页信息与封面</h3>
+            <div class="editor-grid">
+              <label class="editor-field wide">档案代码<input id="edit-archive-code" required /></label>
+              <label class="editor-field wide">主标题<input id="edit-title" required /></label>
+              <label class="editor-field wide">导语<textarea id="edit-lede" required></textarea></label>
+              <label class="editor-field">封面图片地址<input id="edit-hero-image" placeholder="https://... 或相对路径" /></label>
+              <label class="editor-field">上传本地封面<input id="edit-hero-file" type="file" accept="image/*" /></label>
+            </div>
+          </section>
+
+          <section class="editor-section">
+            <h3>档案参数</h3>
+            <div id="meta-editor"></div>
+          </section>
+
+          <section class="editor-section">
+            <h3>构想记录简介</h3>
+            <div class="editor-grid">
+              <label class="editor-field wide">栏目代码<input id="edit-section-kicker" required /></label>
+              <label class="editor-field wide">栏目标题<input id="edit-section-title" required /></label>
+              <label class="editor-field wide">栏目简介<textarea id="edit-section-intro" required></textarea></label>
+            </div>
+          </section>
+
+          <section class="editor-section">
+            <h3>构想记录</h3>
+            <div id="moments-editor"></div>
+            <button class="add-moment" id="add-moment" type="button">＋ 新增构想记录</button>
+          </section>
+
+          <section class="editor-section">
+            <h3>最初命题与页尾</h3>
+            <div class="editor-grid">
+              <label class="editor-field wide">命题标签<input id="edit-thesis-label" required /></label>
+              <label class="editor-field wide">命题正文<textarea id="edit-thesis-text" required></textarea></label>
+              <label class="editor-field wide">页尾档案标记<input id="edit-footer-note" required /></label>
+            </div>
+          </section>
+        </div>
+        <div class="editor-actions">
+          <button class="reset-button" id="reset-page" type="button">恢复初始内容</button>
+          <div class="editor-actions-group"><button id="cancel-editor" type="button">取消</button><button class="save-button" type="submit">保存页面</button></div>
+        </div>
+      </form>
+    </dialog>
+    <div class="status" id="status" hidden></div>
+
+    <script>
+      const STORAGE_KEY = "danhabor-origin-content-v1";
+      const DEFAULT_HERO_IMAGE = "../public/assets/danhabor-001-cover.jpg";
+      const DEFAULT_CONTENT = {
+        hero: {
+          code: "DNYTV1 / TAPE 002 / ORIGIN FILE",
+          title: "丹港风云录：梦开始的地方",
+          lede: "在成为一盒可以播放的影像档案之前，丹港只是一个问题：如果城市的真相只能通过旧电视、遗失的编号和互相矛盾的证词被看见，人们会相信什么？",
+          image: DEFAULT_HERO_IMAGE
+        },
+        meta: [
+          { label: "FILE TYPE", value: "最初构想" },
+          { label: "STATUS", value: "已解密" },
+          { label: "VISUAL TONE", value: "蓝灰雨夜 / 暗红警示" },
+          { label: "ARCHIVE NO.", value: "DNY-ORIGIN-002" }
+        ],
+        origin: {
+          kicker: "DEVELOPMENT RECORD / 构想记录",
+          title: "一座城市，先从一间录像档案室开始",
+          intro: "《丹港风云录》最早并不是从完整剧情出发，而是从一种观看方式出发：观众不是在打开视频页面，而是在深夜进入丹芷电视台的内部资料室，亲手调取一盒不应公开的录像带。城市、案件和人物，都从这套旧电视系统里逐渐显影。"
+        },
+        moments: [
+          { code: "ORIGIN / 01", title: "深夜电视的记忆", body: "70 至 90 年代东亚电视台的监视器、U-matic 录像机、新闻字幕与特别节目包装，构成了最初的情绪底色。设备不是装饰，而是故事真正的入口。" },
+          { code: "ORIGIN / 02", title: "中立港口的裂缝", body: "丹港被设想为一座以贸易、金融和电视工业维持繁荣的港口城市。它表面秩序严密，真正的边界却藏在档案、广播频率、通行许可与被删去的证词之间。" },
+          { code: "ORIGIN / 03", title: "雨夜中的调查者", body: "人物最初被放在城市之后：两名调查者站在雨夜港湾前，面对警灯、封锁线和沉默的天际线。他们既寻找案件答案，也在确认哪些记忆仍然可信。" },
+          { code: "ORIGIN / 04", title: "从短片到档案系统", body: "随着世界观成形，单一动画短片被扩展为连续的影像档案。每盒录像带都可以成为一宗案件、一段人物记录或一块城市切片，让丹港拥有持续生长的空间。" }
+        ],
+        thesis: {
+          label: "THE FIRST QUESTION",
+          text: "丹港真正要追查的，从来不只是罪案，而是谁有权决定一段影像应当被保存、播放，还是永远从档案中消失。"
+        },
+        footer: { note: "DNYTV1 INTERNAL ARCHIVE / ACCESS LOGGED" }
+      };
+
+      const hero = document.querySelector(".hero");
+      const fileMeta = document.querySelector("#file-meta");
+      const timeline = document.querySelector("#timeline");
+      const dialog = document.querySelector("#page-editor-dialog");
+      const form = document.querySelector("#page-editor-form");
+      const metaEditor = document.querySelector("#meta-editor");
+      const momentsEditor = document.querySelector("#moments-editor");
+      const status = document.querySelector("#status");
+      let content = loadContent();
+      let momentDraft = [];
+
+      function clone(value) { return JSON.parse(JSON.stringify(value)); }
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[char]);
+      }
+      function loadContent() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          if (!saved) return clone(DEFAULT_CONTENT);
+          return {
+            hero: { ...DEFAULT_CONTENT.hero, ...saved.hero },
+            meta: Array.isArray(saved.meta) ? saved.meta : clone(DEFAULT_CONTENT.meta),
+            origin: { ...DEFAULT_CONTENT.origin, ...saved.origin },
+            moments: Array.isArray(saved.moments) ? saved.moments : clone(DEFAULT_CONTENT.moments),
+            thesis: { ...DEFAULT_CONTENT.thesis, ...saved.thesis },
+            footer: { ...DEFAULT_CONTENT.footer, ...saved.footer }
+          };
+        } catch { return clone(DEFAULT_CONTENT); }
+      }
+      function saveContent(nextContent) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(nextContent));
+          content = nextContent;
+          showStatus("页面内容已保存在当前浏览器。");
+          return true;
+        } catch {
+          showStatus("保存空间不足，请换用更小的封面图片。");
+          return false;
+        }
+      }
+      function showStatus(message) {
+        status.textContent = message;
+        status.hidden = false;
+        clearTimeout(status.timer);
+        status.timer = setTimeout(() => { status.hidden = true; }, 2600);
+      }
+      function setText(selector, value) { document.querySelector(selector).textContent = value; }
+      function renderPage() {
+        setText("#archive-code", content.hero.code);
+        setText("#origin-title", content.hero.title);
+        setText("#hero-lede", content.hero.lede);
+        setText("#section-kicker", content.origin.kicker);
+        setText("#section-title", content.origin.title);
+        setText("#section-intro", content.origin.intro);
+        setText("#thesis-label", content.thesis.label);
+        setText("#thesis-text", content.thesis.text);
+        setText("#footer-note", content.footer.note);
+        document.title = `${content.hero.title} | 起源档案`;
+        hero.style.backgroundImage = `url(${JSON.stringify(content.hero.image || DEFAULT_HERO_IMAGE)})`;
+        fileMeta.innerHTML = content.meta.map((item) => `<div><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(item.value)}</strong></div>`).join("");
+        timeline.innerHTML = content.moments.map((item) => `<article class="moment"><time>${escapeHtml(item.code)}</time><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.body).replace(/\n/g, "<br>")}</p></article>`).join("");
+      }
+      function renderMetaEditor() {
+        metaEditor.innerHTML = content.meta.map(() => `<div class="meta-editor-row"><label class="editor-field">参数名称<input data-meta-label required /></label><label class="editor-field">参数内容<input data-meta-value required /></label></div>`).join("");
+        [...metaEditor.querySelectorAll(".meta-editor-row")].forEach((row, index) => {
+          row.querySelector("[data-meta-label]").value = content.meta[index].label;
+          row.querySelector("[data-meta-value]").value = content.meta[index].value;
+        });
+      }
+      function syncMomentDraft() {
+        momentDraft = [...momentsEditor.querySelectorAll(".moment-editor-row")].map((row) => ({
+          code: row.querySelector("[data-moment-code]").value.trim(),
+          title: row.querySelector("[data-moment-title]").value.trim(),
+          body: row.querySelector("[data-moment-body]").value.trim()
+        }));
+      }
+      function renderMomentEditor() {
+        momentsEditor.innerHTML = momentDraft.map((item, index) => `<div class="moment-editor-row"><label class="editor-field">记录编号<input data-moment-code required /></label><label class="editor-field">标题<input data-moment-title required /></label><label class="editor-field">正文<textarea data-moment-body required></textarea></label><button class="row-delete" type="button" data-remove-moment="${index}" aria-label="删除此记录">删除</button></div>`).join("");
+        [...momentsEditor.querySelectorAll(".moment-editor-row")].forEach((row, index) => {
+          row.querySelector("[data-moment-code]").value = momentDraft[index].code;
+          row.querySelector("[data-moment-title]").value = momentDraft[index].title;
+          row.querySelector("[data-moment-body]").value = momentDraft[index].body;
+        });
+      }
+      function populateEditor() {
+        document.querySelector("#edit-archive-code").value = content.hero.code;
+        document.querySelector("#edit-title").value = content.hero.title;
+        document.querySelector("#edit-lede").value = content.hero.lede;
+        document.querySelector("#edit-hero-image").value = content.hero.image || "";
+        document.querySelector("#edit-hero-file").value = "";
+        document.querySelector("#edit-section-kicker").value = content.origin.kicker;
+        document.querySelector("#edit-section-title").value = content.origin.title;
+        document.querySelector("#edit-section-intro").value = content.origin.intro;
+        document.querySelector("#edit-thesis-label").value = content.thesis.label;
+        document.querySelector("#edit-thesis-text").value = content.thesis.text;
+        document.querySelector("#edit-footer-note").value = content.footer.note;
+        momentDraft = clone(content.moments);
+        renderMetaEditor();
+        renderMomentEditor();
+      }
+      function compressImage(dataUrl) {
+        return new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = () => {
+            const maxSide = 1600;
+            const scale = Math.min(1, maxSide / Math.max(image.naturalWidth, image.naturalHeight));
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+            canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+            const context = canvas.getContext("2d");
+            context.fillStyle = "#040708";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            let quality = 0.76;
+            let result = canvas.toDataURL("image/jpeg", quality);
+            while (result.length > 520000 && quality > 0.42) {
+              quality -= 0.08;
+              result = canvas.toDataURL("image/jpeg", quality);
+            }
+            resolve(result);
+          };
+          image.onerror = () => reject(new Error("图片格式无法读取。"));
+          image.src = dataUrl;
+        });
+      }
+      function readImage(file) {
+        return new Promise((resolve, reject) => {
+          if (!file) return resolve("");
+          if (file.size > 12000000) return reject(new Error("封面图片请控制在 12 MB 以内。"));
+          const reader = new FileReader();
+          reader.onload = async () => {
+            try { resolve(await compressImage(reader.result)); }
+            catch (error) { reject(error); }
+          };
+          reader.onerror = () => reject(new Error("图片读取失败。"));
+          reader.readAsDataURL(file);
+        });
+      }
+      async function compactStoredHero() {
+        if (!content.hero.image?.startsWith("data:") || content.hero.image.length <= 520000) return;
+        const compacted = clone(content);
+        compacted.hero.image = await compressImage(content.hero.image);
+        if (saveContent(compacted)) renderPage();
+      }
+
+      document.querySelector("#edit-page").addEventListener("click", () => { populateEditor(); dialog.showModal(); });
+      document.querySelector("#close-editor").addEventListener("click", () => dialog.close());
+      document.querySelector("#cancel-editor").addEventListener("click", () => dialog.close());
+      document.querySelector("#add-moment").addEventListener("click", () => {
+        syncMomentDraft();
+        momentDraft.push({ code: `ORIGIN / ${String(momentDraft.length + 1).padStart(2, "0")}`, title: "新构想记录", body: "在这里补充这段构想的发展过程。" });
+        renderMomentEditor();
+      });
+      momentsEditor.addEventListener("click", (event) => {
+        const index = Number(event.target.dataset.removeMoment);
+        if (!Number.isInteger(index)) return;
+        syncMomentDraft();
+        momentDraft.splice(index, 1);
+        renderMomentEditor();
+      });
+      document.querySelector("#reset-page").addEventListener("click", () => {
+        if (!confirm("确定恢复这个页面的初始内容吗？")) return;
+        const restored = clone(DEFAULT_CONTENT);
+        if (saveContent(restored)) { renderPage(); populateEditor(); }
+      });
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        syncMomentDraft();
+        const file = document.querySelector("#edit-hero-file").files[0];
+        try {
+          const uploadedImage = await readImage(file);
+          const nextContent = {
+            hero: {
+              code: document.querySelector("#edit-archive-code").value.trim(),
+              title: document.querySelector("#edit-title").value.trim(),
+              lede: document.querySelector("#edit-lede").value.trim(),
+              image: uploadedImage || document.querySelector("#edit-hero-image").value.trim() || content.hero.image || DEFAULT_HERO_IMAGE
+            },
+            meta: [...metaEditor.querySelectorAll(".meta-editor-row")].map((row) => ({
+              label: row.querySelector("[data-meta-label]").value.trim(),
+              value: row.querySelector("[data-meta-value]").value.trim()
+            })),
+            origin: {
+              kicker: document.querySelector("#edit-section-kicker").value.trim(),
+              title: document.querySelector("#edit-section-title").value.trim(),
+              intro: document.querySelector("#edit-section-intro").value.trim()
+            },
+            moments: momentDraft,
+            thesis: {
+              label: document.querySelector("#edit-thesis-label").value.trim(),
+              text: document.querySelector("#edit-thesis-text").value.trim()
+            },
+            footer: { note: document.querySelector("#edit-footer-note").value.trim() }
+          };
+          if (saveContent(nextContent)) { renderPage(); dialog.close(); }
+        } catch (error) { showStatus(error.message || "保存失败。"); }
+      });
+
+      renderPage();
+      compactStoredHero().catch(() => {});
+    </script>
+    <script src="./danhabor-music-player.js?v=20260722-2"></script>
+  </body>
+</html>

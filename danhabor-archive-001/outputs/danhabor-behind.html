@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="《丹港风云录》幕后制作档案" />
+    <title>幕后制作 | 丹港风云录</title>
+    <script src="./danhabor-shell-redirect.js"></script>
+    <link rel="stylesheet" href="./danhabor-subpage.css" />
+    <link rel="stylesheet" href="./danhabor-music-player.css?v=20260722-2" />
+  </head>
+  <body data-page-key="behind">
+    <header class="site-header"><div class="brand"><strong>DNYTV1 ARCHIVE</strong><span>PRODUCTION RECORD SYSTEM</span></div><a class="back-link" href="./danhabor-001-preview.html?view=archive">← 返回档案室</a></header>
+    <main>
+      <section class="hero"><div class="hero-image-actions"><button id="change-hero-image" type="button">更换背景</button><button id="reset-hero-image" type="button" hidden>恢复默认</button><input id="hero-image-input" type="file" accept="image/*" hidden /></div><div class="hero-copy"><p class="kicker">BEHIND / 幕后制作</p><h1>幕后制作</h1><p>从世界观手稿、角色草图到镜头生成、声音设计与最终剪辑，记录影像档案形成的过程。</p></div></section>
+      <section class="archive-main">
+        <div class="archive-tools"><form class="search" id="search-form"><input id="record-search" type="search" placeholder="搜索制作阶段、工具或记录" aria-label="搜索幕后制作" /><button type="submit" aria-label="搜索">⌕</button></form><button class="add-record" id="add-record" type="button">新增制作记录</button></div>
+        <div class="records" id="records"></div>
+      </section>
+    </main>
+    <footer class="page-footer"><div class="footer-inner"><span>DNYTV1 / PRODUCTION LOG / <span id="page-date"></span></span></div></footer>
+
+    <dialog id="record-dialog">
+      <form class="editor" id="record-form">
+        <h2 id="editor-title">编辑制作记录</h2>
+        <label class="field">阶段编号<input id="record-code" required /></label>
+        <label class="field">记录标题<input id="record-title" required /></label>
+        <label class="field">制作阶段<input id="record-subtitle" required /></label>
+        <label class="field">制作说明<textarea id="record-body" required></textarea></label>
+        <label class="field">图片地址（可选）<input id="record-image-url" placeholder="https://... 或相对路径" /></label>
+        <label class="field">或上传本地图片<input id="record-image-file" type="file" accept="image/*" /></label>
+        <label class="field">关联页面地址（可选）<input id="record-link" placeholder="https://..." /></label>
+        <div class="editor-actions"><button class="danger" id="delete-record" type="button">删除</button><div class="action-group"><button id="cancel-editor" type="button">取消</button><button class="primary" type="submit">保存</button></div></div>
+      </form>
+    </dialog>
+    <div class="status" id="status" hidden></div>
+    <script id="seed-data" type="application/json">[
+      {"id":"behind-visual","code":"PROCESS / 01","title":"深夜电视的视觉来源","subtitle":"视觉开发","body":"70 至 90 年代东亚电视台监视器、U-matic 录像机、特别节目包装与新闻字幕，共同构成了档案室的视觉基调。","image":"../public/assets/danhabor-001-cover.jpg","link":""},
+      {"id":"behind-character","code":"PROCESS / 02","title":"从手绘到角色设定","subtitle":"角色开发","body":"先以个人手稿确定制服比例、人物轮廓与关系，再通过静态设定测试不同镜头中的一致性。","image":"","link":""},
+      {"id":"behind-shot","code":"PROCESS / 03","title":"镜头生成与剪辑","subtitle":"影像制作","body":"在世界观和分镜稳定后完成关键镜头生成，并依次加入转场、字幕、电视台标识与档案时间码。","image":"","link":""},
+      {"id":"behind-sound","code":"PROCESS / 04","title":"声音与档案质感","subtitle":"声音设计","body":"配乐、环境雨声、设备底噪和录像机操作音共同建立空间感，使观众像是在真实设备上调取影像。","image":"","link":""}
+    ]</script>
+    <script src="./danhabor-subpage.js"></script>
+    <script src="./danhabor-music-player.js?v=20260722-2"></script>
+  </body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="丹港风云录全站档案系统" />
+    <title>丹港风云录 | DNYTV1 档案系统</title>
+    <link rel="stylesheet" href="./danhabor-music-player.css?v=20260722-2" />
+    <style>
+      * { box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #040708; }
+      .danhabor-page-frame { width: 100%; height: 100%; display: block; border: 0; background: #040708; }
+    </style>
+  </head>
+  <body data-danhabor-shell>
+    <iframe
+      class="danhabor-page-frame"
+      id="danhabor-page-frame"
+      title="丹港风云录页面内容"
+      allow="autoplay; fullscreen"
+      allowfullscreen
+    ></iframe>
+    <script>
+      const frame = document.querySelector("#danhabor-page-frame");
+      const params = new URLSearchParams(location.search);
+      const requested = params.get("page") || "danhabor-001-preview.html";
+      const target = new URL(requested, location.href);
+      const outputRoot = new URL("./", location.href);
+      const isLocalOutput = target.protocol === outputRoot.protocol && target.pathname.startsWith(outputRoot.pathname);
+      frame.src = isLocalOutput ? target.href : new URL("./danhabor-001-preview.html", location.href).href;
+
+      window.addEventListener("message", (event) => {
+        if (event.source !== frame.contentWindow || event.data?.type !== "danhabor:page-state") return;
+        document.title = event.data.title || document.title;
+        const shellUrl = new URL(location.href);
+        shellUrl.searchParams.set("page", event.data.href || "danhabor-001-preview.html");
+        history.replaceState({}, "", shellUrl);
+      });
+    </script>
+    <script src="./danhabor-music-player.js?v=20260722-2"></script>
+  </body>
+</html>

@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="丹芷（丹港）世界观百科" />
+    <title>丹芷百科 | 丹港风云录世界观</title>
+    <script src="./danhabor-shell-redirect.js"></script>
+    <link rel="stylesheet" href="./danhabor-music-player.css?v=20260722-2" />
+    <style>
+      :root {
+        --bg: #05090c;
+        --panel: #091016;
+        --panel-2: #0c1319;
+        --ink: #e5e7e8;
+        --muted: #aab0b5;
+        --blue: #6ea6db;
+        --line: #39434b;
+        --red: #9b433c;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; background: var(--bg); }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--bg);
+        font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", SimSun, serif;
+      }
+      button, input, textarea { font: inherit; }
+      button, a { -webkit-tap-highlight-color: transparent; }
+
+      .site-header {
+        min-height: 130px;
+        display: grid;
+        grid-template-columns: 320px minmax(320px, 640px) 1fr;
+        align-items: center;
+        gap: 28px;
+        padding: 20px 28px;
+        border-bottom: 1px solid var(--line);
+        background: #060b0f;
+      }
+      .brand { display: flex; align-items: center; gap: 14px; }
+      .brand-mark {
+        width: 58px; height: 58px; display: grid; place-items: center;
+        border: 1px solid #d8dde0; border-radius: 50%;
+        color: #edf0f1; font-family: Georgia, serif; font-size: 29px;
+      }
+      .brand strong { display: block; font-size: 29px; font-weight: 600; }
+      .brand small { display: block; margin-top: 4px; font: 11px Arial, sans-serif; }
+      .search { display: grid; grid-template-columns: 1fr 64px; }
+      .search input {
+        height: 48px; padding: 0 15px; border: 1px solid #56616a;
+        color: var(--ink); background: #080e13; outline: none;
+      }
+      .search button {
+        border: 1px solid #56616a; border-left: 0;
+        color: var(--ink); background: #0b1217; cursor: pointer; font-size: 22px;
+      }
+      .header-tools { justify-self: end; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+      .header-tools a, .header-tools button {
+        border: 0; color: var(--blue); background: transparent;
+        text-decoration: none; cursor: pointer; font-size: 14px;
+      }
+      .header-tools select {
+        min-height: 36px; max-width: 190px; padding: 0 30px 0 10px;
+        border: 1px solid #46535d; color: #d8dde0; background: #091016; cursor: pointer;
+      }
+      .date-line { grid-column: 1 / -1; justify-self: end; margin-top: -18px; color: #bdc2c5; font-size: 14px; }
+
+      .article-head {
+        width: min(1280px, calc(100% - 64px));
+        margin: 0 auto; padding: 34px 0 12px;
+        border-bottom: 1px solid #69727a;
+      }
+      .article-head h1 { margin: 0; font-size: 42px; font-weight: 500; letter-spacing: 0; }
+      .article-head p { margin: 14px 0 0; color: #d2d5d7; font-size: 17px; }
+
+      .wiki-grid {
+        width: min(1480px, calc(100% - 48px));
+        margin: 0 auto; padding: 18px 0 80px;
+        display: grid; grid-template-columns: 190px minmax(0, 1fr) 430px; gap: 34px;
+      }
+      .toc { position: sticky; top: 18px; align-self: start; padding-top: 10px; }
+      .toc-head { display: flex; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+      .toc-head button { border: 0; color: var(--blue); background: transparent; cursor: pointer; }
+      .toc ol { margin: 10px 0 0; padding: 0; list-style: none; }
+      .toc li { margin: 0; }
+      .toc a { display: block; padding: 8px 0; color: #d6dadd; text-decoration: none; font-size: 14px; }
+      .toc a:hover { color: var(--blue); }
+
+      .article-body { min-width: 0; }
+      .entry { padding: 20px 0 26px; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
+      .entry-heading { display: flex; align-items: baseline; gap: 16px; }
+      .entry-heading h2 { margin: 0; font-size: 27px; font-weight: 600; letter-spacing: 0; }
+      .edit-link { border: 0; color: var(--blue); background: transparent; cursor: pointer; font-size: 14px; }
+      .entry-copy { margin-top: 17px; color: #d4d7d9; font-size: 16px; line-height: 1.9; }
+      .entry-copy p { margin: 0 0 16px; }
+      .entry-copy p:last-child { margin-bottom: 0; }
+      .entry-media {
+        position: relative;
+        width: min(100%, 720px);
+        margin: 24px 0 4px;
+        border: 1px solid #46535d;
+        background: #070d11;
+        overflow: hidden;
+      }
+      .entry-image { display: block; width: 100%; height: auto; object-fit: contain; }
+      .entry-image-slot {
+        width: 100%; height: 100%; display: grid; place-content: center; gap: 10px;
+        border: 0; color: #82909a; background:
+          linear-gradient(90deg, transparent 49.85%, rgba(92, 107, 118, 0.18) 50%, transparent 50.15%),
+          linear-gradient(transparent 49.7%, rgba(92, 107, 118, 0.18) 50%, transparent 50.3%),
+          #070d11;
+        cursor: pointer; text-align: center;
+      }
+      .entry-image-slot:hover { color: var(--blue); background-color: #0a1218; }
+      .entry-image-slot .slot-mark { font: 32px/1 Arial, sans-serif; }
+      .entry-image-slot .slot-label { font-size: 14px; }
+      .entry-image-actions {
+        position: absolute; right: 10px; bottom: 10px; display: flex; gap: 8px;
+      }
+      .entry-image-actions button {
+        min-height: 34px; padding: 0 11px; border: 1px solid #77838c;
+        color: #edf0f2; background: rgba(5, 9, 12, 0.88); cursor: pointer;
+      }
+      .entry-image-actions .remove-image { color: #d9b5b1; border-color: #76433f; }
+      .add-entry {
+        width: 100%; min-height: 46px; margin-top: 26px;
+        border: 1px dashed #5f6b74; color: var(--blue); background: #091016; cursor: pointer;
+      }
+
+      .infobox { position: relative; align-self: start; margin-top: 0; border: 1px solid #4b565f; background: #081016; }
+      .infobox h2 { min-height: 68px; margin: 0; padding: 12px 96px; text-align: center; font-size: 24px; font-weight: 500; }
+      .infobox .latin { display: block; margin-top: 3px; font-size: 16px; }
+      .infobox-edit {
+        position: absolute; top: 10px; right: 10px; z-index: 2;
+        min-height: 34px; padding: 0 10px; border: 1px solid #66747d;
+        color: var(--blue); background: #0b151b; cursor: pointer; font-size: 13px;
+      }
+      .infobox-edit:hover, .infobox-edit:focus-visible { border-color: #8ea5b4; color: #a8c9e2; }
+      .city-image-wrap { position: relative; margin: 0 10px; }
+      .city-image { display: block; width: 100%; aspect-ratio: 16 / 7; object-fit: cover; border: 1px solid #52606a; }
+      .image-edit {
+        position: absolute; right: 8px; bottom: 8px; min-height: 34px; padding: 0 11px;
+        border: 1px solid #77838c; color: #edf0f2; background: rgba(5, 9, 12, 0.86); cursor: pointer;
+      }
+      .info-table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 14px; }
+      .info-table th, .info-table td { padding: 9px 10px; border-top: 1px solid #3f4951; border-right: 1px solid #3f4951; text-align: left; vertical-align: top; }
+      .info-table th { width: 108px; color: #d9dde0; font-weight: 500; }
+      .info-table td { color: #c2c7ca; border-right: 0; }
+
+      .status {
+        position: fixed; left: 50%; bottom: 24px; z-index: 50; transform: translateX(-50%);
+        padding: 10px 16px; border: 1px solid #5e7790; color: #e9eef2; background: #0c1821;
+      }
+      dialog { width: min(680px, calc(100% - 32px)); padding: 0; border: 1px solid #65717a; color: var(--ink); background: #0a1117; }
+      dialog::backdrop { background: rgba(0, 0, 0, 0.72); }
+      .editor { padding: 24px; }
+      .editor h2 { margin: 0 0 20px; font-size: 23px; }
+      .field { display: grid; gap: 7px; margin-bottom: 16px; color: #c8cdd0; font-size: 14px; }
+      .field input, .field textarea { width: 100%; border: 1px solid #58636c; color: #eef1f2; background: #070d11; outline: none; }
+      .field input { height: 42px; padding: 0 10px; }
+      .field textarea { min-height: 240px; padding: 10px; resize: vertical; line-height: 1.65; }
+      .field textarea.compact { min-height: 110px; }
+      .remove-image-option { display: flex; align-items: center; gap: 9px; margin: -4px 0 16px; color: #d9b5b1; font-size: 14px; }
+      .remove-image-option input { width: 16px; height: 16px; accent-color: #76433f; }
+      .info-editor-row {
+        display: grid; grid-template-columns: minmax(120px, 0.7fr) minmax(220px, 1.8fr) 54px;
+        gap: 9px; margin-bottom: 9px; align-items: end;
+      }
+      .info-editor-row .field { margin-bottom: 0; }
+      .info-editor-row .remove-info {
+        min-height: 42px; border: 1px solid #76433f; color: #d9b5b1;
+        background: #25100f; cursor: pointer;
+      }
+      .add-info {
+        width: 100%; min-height: 40px; border: 1px dashed #5f6b74;
+        color: var(--blue); background: #091016; cursor: pointer;
+      }
+      .editor-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; }
+      .action-group { display: flex; gap: 10px; }
+      .editor-actions button { min-height: 40px; padding: 0 15px; border: 1px solid #63707a; color: #e5e9eb; background: #101a21; cursor: pointer; }
+      .editor-actions .primary { border-color: #5682a8; background: #17324a; }
+      .editor-actions .danger { border-color: #76433f; color: #d9b5b1; background: #25100f; }
+
+      @media (max-width: 1080px) {
+        .site-header { grid-template-columns: 1fr; gap: 16px; }
+        .header-tools { justify-self: start; }
+        .date-line { grid-column: auto; justify-self: start; margin: 0; }
+        .wiki-grid { grid-template-columns: 170px minmax(0, 1fr); }
+        .infobox { grid-column: 2; grid-row: 1; margin-bottom: 18px; }
+        .article-body { grid-column: 2; }
+      }
+      @media (max-width: 720px) {
+        .site-header { padding: 18px; }
+        .brand strong { font-size: 25px; }
+        .article-head, .wiki-grid { width: calc(100% - 28px); }
+        .article-head h1 { font-size: 32px; }
+        .wiki-grid { display: block; }
+        .toc { position: static; margin-bottom: 20px; }
+        .infobox { margin-bottom: 26px; }
+        .entry-heading h2 { font-size: 23px; }
+        .info-editor-row { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="brand"><div class="brand-mark" aria-hidden="true">丹</div><div><strong>丹芷百科</strong><small>DANZHI ENCYCLOPEDIA</small></div></div>
+      <form class="search" id="search-form"><input id="search-input" type="search" placeholder="搜索丹芷百科" aria-label="搜索丹芷百科" /><button type="submit" aria-label="搜索" title="搜索">⌕</button></form>
+      <div class="header-tools">
+        <a href="./danhabor-001-preview.html?view=archive">返回档案室</a>
+        <select id="page-select" aria-label="选择词条页"></select>
+        <button id="create-page" type="button">新增词条页</button>
+        <button id="edit-page" type="button">编辑词条页</button>
+        <button id="add-top" type="button">新增段落</button>
+      </div>
+      <div class="date-line">地球历：<span id="earth-date"></span></div>
+    </header>
+
+    <section class="article-head"><h1 id="article-title">丹芷（丹港）</h1><p id="article-subtitle">架空南阑珊洋港口都市、三方分治城市</p></section>
+
+    <main class="wiki-grid">
+      <nav class="toc" aria-label="目录"><div class="toc-head"><strong>目录</strong><button id="toc-toggle" type="button">隐藏</button></div><ol id="toc-list"></ol></nav>
+      <article class="article-body"><div id="entries"></div><button class="add-entry" id="add-entry" type="button">＋ 新增段落</button><input id="quick-image-input" type="file" accept="image/*" hidden /></article>
+      <aside class="infobox">
+        <button class="infobox-edit" id="edit-infobox" type="button">编辑资料</button>
+        <h2><span id="infobox-title">丹芷</span><span class="latin" id="infobox-latin">Danzhi</span></h2>
+        <div class="city-image-wrap"><img class="city-image" id="city-image" src="../public/assets/danhabor-001-cover.jpg" alt="丹芷城市影像" /><button class="image-edit" id="change-city-image" type="button">更换图片</button><input id="city-image-input" type="file" accept="image/*" hidden /></div>
+        <table class="info-table"><tbody id="info-table-body"></tbody></table>
+      </aside>
+    </main>
+
+    <dialog id="editor-dialog">
+      <form class="editor" id="editor-form">
+        <h2 id="editor-title">编辑条目</h2>
+        <label class="field">标题<input id="entry-title" required /></label>
+        <label class="field">正文<textarea id="entry-body" placeholder="段落之间请空一行" required></textarea></label>
+        <label class="field">图片链接（可选）<input id="entry-image-url" type="url" placeholder="https://..." /></label>
+        <label class="field">上传条目图片<input id="entry-image-file" type="file" accept="image/*" /></label>
+        <label class="remove-image-option" id="remove-entry-image-row"><input id="remove-entry-image" type="checkbox" />移除当前图片</label>
+        <div class="editor-actions"><button class="danger" id="delete-entry" type="button">删除条目</button><div class="action-group"><button id="cancel-editor" type="button">取消</button><button class="primary" type="submit">保存</button></div></div>
+      </form>
+    </dialog>
+
+    <dialog id="page-editor-dialog">
+      <form class="editor" id="page-editor-form">
+        <h2 id="page-editor-title">新增词条页</h2>
+        <label class="field">词条页标题<input id="page-title" required placeholder="例如：丹芷（丹港）" /></label>
+        <label class="field">副标题<input id="page-subtitle" required placeholder="用一句话概括这个词条" /></label>
+        <label class="field">资料框标题<input id="page-card-title" required placeholder="例如：丹芷" /></label>
+        <label class="field">外文名称<input id="page-latin" placeholder="例如：Danzhi" /></label>
+        <label class="field">主图地址（可选）<input id="page-image-url" placeholder="https://... 或相对路径" /></label>
+        <label class="field">或上传本地主图<input id="page-image-file" type="file" accept="image/*" /></label>
+        <h3>资料表</h3>
+        <div id="info-editor"></div>
+        <button class="add-info" id="add-info" type="button">＋ 新增资料项</button>
+        <div class="editor-actions"><button class="danger" id="delete-page" type="button">删除词条页</button><div class="action-group"><button id="cancel-page-editor" type="button">取消</button><button class="primary" type="submit">保存词条页</button></div></div>
+      </form>
+    </dialog>
+    <div class="status" id="status" hidden></div>
+
+    <script>
+      const PAGES_KEY = "danhabor-world-pages-v1";
+      const LEGACY_SECTIONS_KEY = "danhabor-world-sections-v1";
+      const LEGACY_IMAGE_KEY = "danhabor-world-city-image-v1";
+      const DEFAULT_IMAGE = "../public/assets/danhabor-001-cover.jpg";
+      const DEFAULT_SECTIONS = [
+        { id: "overview", title: "概述", body: "丹芷，通称“丹港”，是一座位于南阑珊洋丹芷地峡附近的架空港口都市。该城因深水港、国际航道和马桥国际空港而具有重要的贸易、交通与军事价值。\n\n三套政治制度、司法体系、货币和社会文化在狭小地域内长期并存，使丹芷既成为多方势力展示繁荣与秩序的橱窗，也成为走私、情报活动与跨境犯罪高度集中的灰色地带。", image: "" },
+        { id: "name", title: "名称", body: "“丹芷”是城市在法律文件、行政公文和正式地图中的名称；“丹港”则是其历史名称、港务名称和社会通称。\n\n在城市日常生活中，两种称呼长期并用：官方机构更常使用“丹芷”，媒体、航运业和市民则更习惯称其为“丹港”。", image: "" },
+        { id: "history", title: "历史", body: "丹芷在南洋联合帝国时期曾是独立于内地行政体系的皇室特别港。世界大战结束后，围绕该城归属问题的多方博弈最终形成特殊的三方分治结构。\n\n1946 年以后，城市边界逐渐固化，北部、中央共管区与南部形成既互相依赖又彼此警惕的长期秩序。", image: "" },
+        { id: "politics", title: "政治地位", body: "丹芷不是传统意义上的单一城市政府。城市的警务、司法、税关与通行制度由不同区域分别管理，并通过中央共管机构维持最低程度的协作。", image: "" },
+        { id: "districts", title: "行政区划", body: "北丹港由北方政权管辖，中丹港为多方共同管理的政治与商业中心，南丹港则被纳入南部邦联自治体系。三地之间设有检查站、口岸与不同等级的通行许可。", image: "" },
+        { id: "infrastructure", title: "交通与基础设施", body: "丹芷港、马桥国际空港、环湾铁路和跨区电车构成城市的交通骨架。港区仓储、电视广播设施与地下通信网络共同维持这座城市的昼夜运转。", image: "" },
+        { id: "society", title: "社会与经济", body: "转口贸易、金融清算、航空运输与电视工业是丹芷的主要产业。多币制、多语言和多重司法辖区塑造了复杂而高度流动的城市社会。", image: "" },
+        { id: "story", title: "剧情概要", body: "《丹港风云录》的案件从一盒电视台内部录像带展开。调查者在雨夜城市中追踪被删除的编号、互相冲突的证词，以及隐藏在广播信号背后的权力关系。", image: "" },
+        { id: "characters", title: "主要人物", body: "人物资料仍在整理中。可使用本页的编辑功能继续补充角色履历、关系、立场与相关图片。", image: "" }
+      ];
+      const DEFAULT_INFO = [
+        { label: "通称", value: "丹港、Danport" },
+        { label: "城市类型", value: "港口都市、政治飞地、三方分治城市" },
+        { label: "分治时间", value: "1946 年" },
+        { label: "行政区域", value: "北丹港、中丹港、南丹港" },
+        { label: "核心设施", value: "马桥国际空港、丹芷港" },
+        { label: "政治状态", value: "三方分治、中部共管" },
+        { label: "主要产业", value: "港口物流、转口贸易、金融清算、航空运输" },
+        { label: "别称", value: "中立橱窗、三色之城" }
+      ];
+
+      const entries = document.querySelector("#entries");
+      const tocList = document.querySelector("#toc-list");
+      const dialog = document.querySelector("#editor-dialog");
+      const form = document.querySelector("#editor-form");
+      const pageDialog = document.querySelector("#page-editor-dialog");
+      const pageForm = document.querySelector("#page-editor-form");
+      const pageSelect = document.querySelector("#page-select");
+      const infoEditor = document.querySelector("#info-editor");
+      const cityImage = document.querySelector("#city-image");
+      const status = document.querySelector("#status");
+      let pages = loadPages();
+      let currentPageId = new URLSearchParams(location.search).get("entry");
+      if (!pages.some((page) => page.id === currentPageId)) currentPageId = pages[0].id;
+      let sections = [];
+      let editingId = null;
+      let editingPageId = null;
+      let pendingImageId = null;
+      let infoDraft = [];
+
+      function clone(value) { return JSON.parse(JSON.stringify(value)); }
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[char]);
+      }
+      function loadPages() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(PAGES_KEY));
+          if (Array.isArray(saved) && saved.length) return saved;
+        } catch {}
+        let legacySections = clone(DEFAULT_SECTIONS);
+        let legacyImage = DEFAULT_IMAGE;
+        try { legacySections = JSON.parse(localStorage.getItem(LEGACY_SECTIONS_KEY)) || legacySections; } catch {}
+        try { legacyImage = localStorage.getItem(LEGACY_IMAGE_KEY) || legacyImage; } catch {}
+        return [{
+          id: "danzhi",
+          title: "丹芷（丹港）",
+          subtitle: "架空南阑珊洋港口都市、三方分治城市",
+          cardTitle: "丹芷",
+          latin: "Danzhi",
+          image: legacyImage,
+          info: clone(DEFAULT_INFO),
+          sections: legacySections
+        }];
+      }
+      function currentPage() { return pages.find((page) => page.id === currentPageId) || pages[0]; }
+      function savePages(message = "百科内容已保存在当前浏览器。") {
+        const payload = JSON.stringify(pages);
+        const legacySections = localStorage.getItem(LEGACY_SECTIONS_KEY);
+        const legacyImage = localStorage.getItem(LEGACY_IMAGE_KEY);
+        try {
+          localStorage.setItem(PAGES_KEY, payload);
+          localStorage.removeItem(LEGACY_SECTIONS_KEY);
+          localStorage.removeItem(LEGACY_IMAGE_KEY);
+          showStatus(message);
+          return true;
+        } catch {
+          try {
+            localStorage.removeItem(LEGACY_SECTIONS_KEY);
+            localStorage.removeItem(LEGACY_IMAGE_KEY);
+            localStorage.setItem(PAGES_KEY, payload);
+            showStatus(message);
+            return true;
+          } catch {
+            if (!localStorage.getItem(PAGES_KEY)) {
+              try {
+                if (legacySections) localStorage.setItem(LEGACY_SECTIONS_KEY, legacySections);
+                if (legacyImage) localStorage.setItem(LEGACY_IMAGE_KEY, legacyImage);
+              } catch {}
+            }
+            showStatus("浏览器存储空间仍然不足，请移除一张旧图片后重试。");
+            return false;
+          }
+        }
+      }
+      function saveSections() {
+        currentPage().sections = sections;
+        return savePages();
+      }
+      function showStatus(message) {
+        status.textContent = message; status.hidden = false; clearTimeout(status.timer);
+        status.timer = setTimeout(() => { status.hidden = true; }, 2500);
+      }
+      function updatePageUrl() {
+        const url = new URL(location.href);
+        url.searchParams.set("entry", currentPageId);
+        url.hash = "";
+        history.replaceState(null, "", url);
+      }
+      function renderSections() {
+        tocList.innerHTML = sections.map((section, index) => `<li><a href="#${escapeHtml(section.id)}">${index + 1}. ${escapeHtml(section.title)}</a></li>`).join("");
+        entries.innerHTML = sections.map((section, index) => {
+          const paragraphs = section.body.split(/\n\s*\n/).map((p) => `<p>${escapeHtml(p).replace(/\n/g, "<br>")}</p>`).join("");
+          const media = section.image
+            ? `<div class="entry-media"><img class="entry-image" src="${escapeHtml(section.image)}" alt="${escapeHtml(section.title)}配图" /><div class="entry-image-actions"><button type="button" data-upload-image="${escapeHtml(section.id)}">替换图片</button><button class="remove-image" type="button" data-remove-image="${escapeHtml(section.id)}">移除</button></div></div>`
+            : "";
+          return `<section class="entry" id="${escapeHtml(section.id)}"><div class="entry-heading"><h2>${index + 1}. ${escapeHtml(section.title)}</h2><button class="edit-link" type="button" data-edit="${escapeHtml(section.id)}">[编辑]</button></div><div class="entry-copy">${paragraphs}${media}</div></section>`;
+        }).join("");
+      }
+      function renderCurrentPage(updateUrl = false) {
+        const page = currentPage();
+        currentPageId = page.id;
+        sections = Array.isArray(page.sections) ? page.sections : [];
+        document.querySelector("#article-title").textContent = page.title;
+        document.querySelector("#article-subtitle").textContent = page.subtitle;
+        document.querySelector("#infobox-title").textContent = page.cardTitle;
+        document.querySelector("#infobox-latin").textContent = page.latin;
+        cityImage.src = page.image || DEFAULT_IMAGE;
+        cityImage.alt = `${page.cardTitle}资料图片`;
+        document.querySelector("#info-table-body").innerHTML = (page.info || []).map((item) => `<tr><th>${escapeHtml(item.label)}</th><td>${escapeHtml(item.value)}</td></tr>`).join("");
+        pageSelect.innerHTML = pages.map((item) => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.title)}</option>`).join("");
+        pageSelect.value = page.id;
+        document.title = `${page.title} | 丹芷百科`;
+        renderSections();
+        if (updateUrl) updatePageUrl();
+      }
+      function openEditor(id = null) {
+        editingId = id;
+        const section = sections.find((item) => item.id === id);
+        document.querySelector("#editor-title").textContent = section ? "编辑段落" : "新增段落";
+        document.querySelector("#entry-title").value = section?.title || "";
+        document.querySelector("#entry-body").value = section?.body || "";
+        document.querySelector("#entry-image-url").value = section?.image?.startsWith("http") ? section.image : "";
+        document.querySelector("#entry-image-file").value = "";
+        document.querySelector("#remove-entry-image").checked = false;
+        document.querySelector("#remove-entry-image-row").hidden = !section?.image;
+        document.querySelector("#delete-entry").hidden = !section;
+        dialog.showModal();
+      }
+      function compressImage(dataUrl) {
+        return new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = () => {
+            const maxSide = 1280;
+            const scale = Math.min(1, maxSide / Math.max(image.naturalWidth, image.naturalHeight));
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+            canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+            const context = canvas.getContext("2d");
+            context.fillStyle = "#05090c";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            let quality = 0.76;
+            let result = canvas.toDataURL("image/jpeg", quality);
+            while (result.length > 420000 && quality > 0.42) {
+              quality -= 0.08;
+              result = canvas.toDataURL("image/jpeg", quality);
+            }
+            resolve(result);
+          };
+          image.onerror = () => reject(new Error("图片格式无法读取。"));
+          image.src = dataUrl;
+        });
+      }
+      function readImage(file) {
+        return new Promise((resolve, reject) => {
+          if (!file) return resolve("");
+          if (file.size > 12000000) return reject(new Error("图片请控制在 12 MB 以内。"));
+          const reader = new FileReader();
+          reader.onload = async () => {
+            try { resolve(await compressImage(reader.result)); }
+            catch (error) { reject(error); }
+          };
+          reader.onerror = () => reject(new Error("图片读取失败。"));
+          reader.readAsDataURL(file);
+        });
+      }
+      async function compactStoredImages() {
+        let changed = false;
+        for (const page of pages) {
+          if (page.image?.startsWith("data:") && page.image.length > 420000) {
+            page.image = await compressImage(page.image);
+            changed = true;
+          }
+          for (const section of page.sections || []) {
+            if (section.image?.startsWith("data:") && section.image.length > 420000) {
+              section.image = await compressImage(section.image);
+              changed = true;
+            }
+          }
+        }
+        if (changed && savePages("已有图片已自动优化。")) renderCurrentPage();
+      }
+      function syncInfoDraft() {
+        infoDraft = [...infoEditor.querySelectorAll(".info-editor-row")].map((row) => ({
+          label: row.querySelector("[data-info-label]").value.trim(),
+          value: row.querySelector("[data-info-value]").value.trim()
+        }));
+      }
+      function renderInfoEditor() {
+        infoEditor.innerHTML = infoDraft.map((item, index) => `<div class="info-editor-row"><label class="field">资料名称<input data-info-label required /></label><label class="field">资料内容<input data-info-value required /></label><button class="remove-info" type="button" data-remove-info="${index}" aria-label="删除资料项">删除</button></div>`).join("");
+        [...infoEditor.querySelectorAll(".info-editor-row")].forEach((row, index) => {
+          row.querySelector("[data-info-label]").value = infoDraft[index].label;
+          row.querySelector("[data-info-value]").value = infoDraft[index].value;
+        });
+      }
+      function openPageEditor(id = null) {
+        editingPageId = id;
+        const page = pages.find((item) => item.id === id);
+        document.querySelector("#page-editor-title").textContent = page ? "编辑词条页" : "新增词条页";
+        document.querySelector("#page-title").value = page?.title || "";
+        document.querySelector("#page-subtitle").value = page?.subtitle || "";
+        document.querySelector("#page-card-title").value = page?.cardTitle || "";
+        document.querySelector("#page-latin").value = page?.latin || "";
+        document.querySelector("#page-image-url").value = page?.image || "";
+        document.querySelector("#page-image-file").value = "";
+        document.querySelector("#delete-page").hidden = !page;
+        infoDraft = clone(page?.info || [{ label: "词条类型", value: "待补充" }]);
+        renderInfoEditor();
+        pageDialog.showModal();
+      }
+
+      const quickImageInput = document.querySelector("#quick-image-input");
+      entries.addEventListener("click", (event) => {
+        const editId = event.target.dataset.edit;
+        const uploadId = event.target.closest("[data-upload-image]")?.dataset.uploadImage;
+        const removeId = event.target.dataset.removeImage;
+        if (editId) openEditor(editId);
+        if (uploadId) { pendingImageId = uploadId; quickImageInput.value = ""; quickImageInput.click(); }
+        if (removeId) {
+          sections = sections.map((item) => item.id === removeId ? { ...item, image: "" } : item);
+          if (saveSections()) renderSections();
+        }
+      });
+      quickImageInput.addEventListener("change", async (event) => {
+        if (!pendingImageId || !event.target.files[0]) return;
+        try {
+          const image = await readImage(event.target.files[0]);
+          sections = sections.map((item) => item.id === pendingImageId ? { ...item, image } : item);
+          if (saveSections()) renderSections();
+        } catch (error) { showStatus(error.message || "图片读取失败。"); }
+        finally { pendingImageId = null; }
+      });
+      document.querySelector("#add-entry").addEventListener("click", () => openEditor());
+      document.querySelector("#add-top").addEventListener("click", () => openEditor());
+      document.querySelector("#cancel-editor").addEventListener("click", () => dialog.close());
+      document.querySelector("#delete-entry").addEventListener("click", () => {
+        if (!editingId || !confirm("确定删除这个段落吗？")) return;
+        sections = sections.filter((item) => item.id !== editingId);
+        if (saveSections()) { renderSections(); dialog.close(); }
+      });
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const title = document.querySelector("#entry-title").value.trim();
+        const body = document.querySelector("#entry-body").value.trim();
+        const imageUrl = document.querySelector("#entry-image-url").value.trim();
+        const file = document.querySelector("#entry-image-file").files[0];
+        const removeImage = document.querySelector("#remove-entry-image").checked;
+        const existing = sections.find((item) => item.id === editingId);
+        try {
+          const uploaded = await readImage(file);
+          const updated = { id: existing?.id || `entry-${Date.now()}`, title, body, image: removeImage ? "" : (uploaded || imageUrl || existing?.image || "") };
+          sections = existing ? sections.map((item) => item.id === editingId ? updated : item) : [...sections, updated];
+          if (saveSections()) { renderSections(); dialog.close(); }
+        } catch (error) { showStatus(error.message || "图片读取失败。"); }
+      });
+
+      pageSelect.addEventListener("change", () => { currentPageId = pageSelect.value; renderCurrentPage(true); window.scrollTo({ top: 0, behavior: "smooth" }); });
+      document.querySelector("#create-page").addEventListener("click", () => openPageEditor());
+      document.querySelector("#edit-page").addEventListener("click", () => openPageEditor(currentPageId));
+      document.querySelector("#edit-infobox").addEventListener("click", () => openPageEditor(currentPageId));
+      document.querySelector("#cancel-page-editor").addEventListener("click", () => pageDialog.close());
+      document.querySelector("#add-info").addEventListener("click", () => {
+        syncInfoDraft(); infoDraft.push({ label: "新资料", value: "待补充" }); renderInfoEditor();
+      });
+      infoEditor.addEventListener("click", (event) => {
+        const index = Number(event.target.dataset.removeInfo);
+        if (!Number.isInteger(index)) return;
+        syncInfoDraft(); infoDraft.splice(index, 1); renderInfoEditor();
+      });
+      document.querySelector("#delete-page").addEventListener("click", () => {
+        if (!editingPageId || pages.length === 1) { showStatus("百科至少需要保留一个词条页。"); return; }
+        if (!confirm("确定删除这个完整词条页吗？")) return;
+        pages = pages.filter((page) => page.id !== editingPageId);
+        currentPageId = pages[0].id;
+        if (savePages("词条页已删除。")) { renderCurrentPage(true); pageDialog.close(); }
+      });
+      pageForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        syncInfoDraft();
+        const existing = pages.find((item) => item.id === editingPageId);
+        const file = document.querySelector("#page-image-file").files[0];
+        try {
+          const uploaded = await readImage(file);
+          const id = existing?.id || `page-${Date.now()}`;
+          const page = {
+            id,
+            title: document.querySelector("#page-title").value.trim(),
+            subtitle: document.querySelector("#page-subtitle").value.trim(),
+            cardTitle: document.querySelector("#page-card-title").value.trim(),
+            latin: document.querySelector("#page-latin").value.trim(),
+            image: uploaded || document.querySelector("#page-image-url").value.trim() || existing?.image || DEFAULT_IMAGE,
+            info: infoDraft,
+            sections: existing?.sections || [{ id: `entry-${Date.now()}`, title: "概述", body: "请在这里补充这个词条的概述。", image: "" }]
+          };
+          pages = existing ? pages.map((item) => item.id === id ? page : item) : [...pages, page];
+          currentPageId = id;
+          if (savePages(existing ? "词条页已更新。" : "新词条页已建立。")) { renderCurrentPage(true); pageDialog.close(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+        } catch (error) { showStatus(error.message || "图片读取失败。"); }
+      });
+
+      document.querySelector("#change-city-image").addEventListener("click", () => document.querySelector("#city-image-input").click());
+      document.querySelector("#city-image-input").addEventListener("change", async (event) => {
+        try {
+          const image = await readImage(event.target.files[0]);
+          currentPage().image = image;
+          if (savePages("词条主图已更新。")) renderCurrentPage();
+        } catch (error) { showStatus(error.message || "图片读取失败。"); }
+      });
+      document.querySelector("#toc-toggle").addEventListener("click", (event) => { const hidden = tocList.hidden = !tocList.hidden; event.target.textContent = hidden ? "显示" : "隐藏"; });
+      document.querySelector("#search-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const query = document.querySelector("#search-input").value.trim().toLowerCase();
+        if (!query) return;
+        const result = pages.map((page) => ({
+          page,
+          section: page.sections.find((item) => `${item.title} ${item.body}`.toLowerCase().includes(query)),
+          pageMatch: `${page.title} ${page.subtitle} ${page.cardTitle} ${page.latin}`.toLowerCase().includes(query)
+        })).find((item) => item.pageMatch || item.section);
+        if (!result) { showStatus("没有找到匹配词条。"); return; }
+        currentPageId = result.page.id;
+        renderCurrentPage(true);
+        requestAnimationFrame(() => result.section ? document.getElementById(result.section.id)?.scrollIntoView({ behavior: "smooth" }) : window.scrollTo({ top: 0, behavior: "smooth" }));
+      });
+      const now = new Date();
+      document.querySelector("#earth-date").textContent = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+      renderCurrentPage();
+      if (location.hash) requestAnimationFrame(() => document.getElementById(location.hash.slice(1))?.scrollIntoView());
+      compactStoredImages().catch(() => {});
+    </script>
+    <script src="./danhabor-music-player.js?v=20260722-2"></script>
+  </body>
+</html>

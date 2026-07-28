@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="《丹港风云录》可交互人物档案馆" />
+    <title>人物志 | 丹港全球档案馆</title>
+    <script src="./danhabor-shell-redirect.js"></script>
+    <link rel="stylesheet" href="./danhabor-characters.css?v=20260722-7" />
+    <link rel="stylesheet" href="./danhabor-music-player.css?v=20260722-2" />
+  </head>
+  <body data-page-key="characters">
+    <div class="archive-app" id="archive-app" data-state="passportClosed">
+      <header class="archive-topbar">
+        <a class="archive-brand" href="./danhabor-001-preview.html?view=archive">
+          <strong>全球档案馆</strong>
+          <span>GLOBAL ARCHIVE / DNY PERSONNEL</span>
+        </a>
+        <nav class="archive-nav" aria-label="档案馆导航">
+          <a href="./danhabor-001-preview.html?view=archive">档案馆</a>
+          <a href="./danhabor-characters.html" aria-current="page">人物志</a>
+          <a href="./danhabor-world.html">文献库</a>
+          <a href="./danhabor-cases.html">影像库</a>
+          <a href="./danhabor-behind.html">关于我们</a>
+        </nav>
+        <div class="archive-top-actions">
+          <label class="archive-search">
+            <span hidden>搜索人物</span>
+            <input id="character-search" type="search" list="character-options" placeholder="搜索人物..." autocomplete="off" />
+            <datalist id="character-options"></datalist>
+          </label>
+          <button class="icon-button" id="open-editor" type="button" aria-label="编辑当前档案" title="编辑当前档案">✎</button>
+        </div>
+      </header>
+
+      <main class="archive-workspace">
+        <section class="archive-folder" aria-label="人物双页档案夹">
+          <div class="folder-tab">个人档案</div>
+          <section class="folder-page folder-page-left" aria-label="人物护照">
+            <div class="passport-stage">
+              <article class="passport" id="passport">
+                <section class="passport-lower" id="passport-lower" aria-label="签证与通行记录"></section>
+                <div class="passport-flap" id="passport-flap">
+                  <button class="passport-cover" id="passport-open" type="button" aria-label="打开人物护照">
+                    <span class="passport-cover-mark">
+                      <span class="passport-emblem" aria-hidden="true">丹</span>
+                      <strong>公务护照</strong>
+                      <span>DANGANG OFFICIAL SERVICE PASSPORT<br /><b id="cover-number"></b></span>
+                    </span>
+                    <span class="passport-hint">点击查看档案</span>
+                  </button>
+                </div>
+                <section class="passport-identity" id="passport-identity" aria-label="人物身份页"></section>
+              </article>
+              <div class="character-switcher" aria-label="切换人物">
+                <button class="switch-character" id="previous-character" type="button" aria-label="上一位人物">‹</button>
+                <button class="switch-character" id="next-character" type="button" aria-label="下一位人物">›</button>
+              </div>
+            </div>
+            <section class="related-strip" aria-label="关联人物">
+              <strong>相关人物</strong>
+              <div class="related-list" id="related-list"></div>
+            </section>
+          </section>
+
+          <section class="folder-page folder-page-right" aria-label="人物详情页">
+            <div class="paper-stack-blank" id="paper-stack-blank">ARCHIVE PAGE RESERVED<br />等待护照开启</div>
+            <div class="paper-stack" id="paper-stack" aria-live="polite"></div>
+          </section>
+        </section>
+      </main>
+
+      <footer class="archive-toolbar">
+        <div class="toolbar-group">
+          <a class="toolbar-link" href="./danhabor-001-preview.html?view=archive">← 返回档案室</a>
+        </div>
+        <p class="archive-status" id="archive-status">PASSPORT CLOSED / 选择护照进入人物档案</p>
+        <div class="toolbar-group">
+          <button class="toolbar-button" id="add-character" type="button">新增人物</button>
+          <button class="toolbar-button" id="toolbar-edit" type="button">编辑档案</button>
+          <button class="toolbar-button" id="export-character-data" type="button">导出 JSON</button>
+        </div>
+      </footer>
+    </div>
+
+    <button class="drawer-scrim" id="drawer-scrim" type="button" aria-label="关闭编辑窗口"></button>
+    <aside class="edit-drawer" id="edit-drawer" aria-hidden="true" aria-label="人物档案编辑器">
+      <header class="edit-drawer-header">
+        <h2 id="edit-drawer-title">编辑人物档案</h2>
+        <button class="icon-button" id="close-editor" type="button" aria-label="关闭编辑窗口">×</button>
+      </header>
+      <p class="edit-badge">EDIT MODE / 正在编辑，修改内容将实时预览</p>
+      <form class="edit-form" id="character-form">
+        <fieldset class="edit-section">
+          <legend>基础身份</legend>
+          <div class="edit-grid">
+            <label class="edit-field"><span>人物 ID</span><input name="id" required /></label>
+            <label class="edit-field"><span>姓名</span><input name="name" required /></label>
+            <label class="edit-field"><span>外文名</span><input name="foreignName" /></label>
+            <label class="edit-field"><span>性别</span><input name="gender" /></label>
+            <label class="edit-field"><span>出生日期</span><input name="birthDate" /></label>
+            <label class="edit-field"><span>出生地</span><input name="birthPlace" /></label>
+            <label class="edit-field"><span>国籍</span><input name="nationality" /></label>
+            <label class="edit-field"><span>所属地区</span><input name="region" /></label>
+            <label class="edit-field edit-field-wide"><span>职业</span><input name="occupation" /></label>
+            <label class="edit-field edit-field-wide"><span>证件照路径或 URL</span><input name="passportPhoto" placeholder="../public/assets/characters/portrait.jpg" /></label>
+            <label class="edit-field edit-field-wide"><span>头像路径或 URL</span><input name="avatar" /></label>
+          </div>
+        </fieldset>
+        <fieldset class="edit-section">
+          <legend>护照字段</legend>
+          <div class="edit-grid">
+            <label class="edit-field"><span>护照编号</span><input name="passportNumber" /></label>
+            <label class="edit-field"><span>签发日期</span><input name="issueDate" /></label>
+            <label class="edit-field"><span>有效期</span><input name="expiryDate" /></label>
+            <label class="edit-field edit-field-wide"><span>机器识别码</span><textarea name="machineReadableCode"></textarea></label>
+          </div>
+        </fieldset>
+        <fieldset class="edit-section">
+          <legend>人物资料</legend>
+          <label class="edit-field"><span>人物概述</span><textarea name="summary"></textarea></label>
+          <label class="edit-field"><span>经历摘要</span><textarea name="experience"></textarea></label>
+        </fieldset>
+        <fieldset class="edit-section">
+          <legend>数组与动态模块（JSON）</legend>
+          <label class="edit-field"><span>所属组织</span><textarea name="organizations" data-json></textarea></label>
+          <label class="edit-field"><span>时间轴</span><textarea name="timeline" data-json></textarea></label>
+          <label class="edit-field"><span>签证与印章</span><textarea name="stamps" data-json></textarea></label>
+          <label class="edit-field"><span>图片与说明</span><textarea name="gallery" data-json></textarea></label>
+          <label class="edit-field"><span>相关物件</span><textarea name="relatedObjects" data-json></textarea></label>
+          <label class="edit-field"><span>关联人物 ID</span><textarea name="relatedCharacters" data-json></textarea></label>
+          <label class="edit-field"><span>自定义纸片</span><textarea name="customPaperSections" data-json></textarea></label>
+        </fieldset>
+      </form>
+      <footer class="edit-drawer-actions">
+        <div class="drawer-action-group">
+          <button class="drawer-button" id="restore-defaults" type="button">恢复默认</button>
+          <button class="drawer-button" id="import-character-data" type="button">导入 JSON</button>
+          <input id="import-character-file" type="file" accept="application/json,.json" hidden />
+          <button class="drawer-button drawer-button-danger" id="delete-character" type="button">删除人物</button>
+        </div>
+        <div class="drawer-action-group">
+          <button class="drawer-button" id="cancel-edit" type="button">取消</button>
+          <button class="drawer-button drawer-button-primary" id="save-character" type="submit" form="character-form">保存到浏览器</button>
+        </div>
+      </footer>
+    </aside>
+
+    <dialog class="image-lightbox" id="image-lightbox" aria-label="图片查看器">
+      <button class="lightbox-close" id="close-lightbox" type="button" aria-label="关闭图片查看器">×</button>
+      <div class="lightbox-stage" id="lightbox-stage"><img id="lightbox-image" alt="" /></div>
+      <footer class="lightbox-toolbar">
+        <div class="lightbox-copy"><strong id="lightbox-title"></strong><span id="lightbox-caption"></span></div>
+        <div class="lightbox-actions">
+          <button id="lightbox-previous" type="button" aria-label="上一张图片">‹</button>
+          <button id="lightbox-zoom-out" type="button" aria-label="缩小图片">−</button>
+          <button id="lightbox-reset" type="button" aria-label="恢复图片大小">1:1</button>
+          <button id="lightbox-zoom-in" type="button" aria-label="放大图片">＋</button>
+          <button id="lightbox-next" type="button" aria-label="下一张图片">›</button>
+        </div>
+      </footer>
+    </dialog>
+
+    <div class="toast" id="toast" hidden></div>
+    <script src="./danhabor-characters-data.js?v=20260722-1"></script>
+    <script src="./danhabor-characters.js?v=20260722-2"></script>
+    <script src="./danhabor-music-player.js?v=20260722-2"></script>
+  </body>
+</html>

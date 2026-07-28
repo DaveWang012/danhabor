@@ -1,0 +1,2265 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>丹港风云录 001 | DNYTV1 影像档案系统</title>
+    <script src="./danhabor-shell-redirect.js"></script>
+    <link rel="stylesheet" href="./danhabor-boarding-intro.css" />
+    <link rel="stylesheet" href="./danhabor-music-player.css?v=20260722-2" />
+    <script>
+      if (new URLSearchParams(window.location.search).get("view") === "archive") {
+        document.documentElement.classList.add("start-in-archive");
+      }
+    </script>
+    <style>
+      @font-face {
+        font-family: "Archive Eva Mincho";
+        src: url("../public/assets/archive-eva-mincho.otf") format("opentype");
+        font-display: swap;
+        font-style: normal;
+        font-weight: 800;
+      }
+
+      :root {
+        --red: #8e2822;
+        --paper: #d2c8b6;
+        --muted: #827e73;
+        --screen: #142630;
+        --scene-brightness: 1.1;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      button.physical-press {
+        filter: brightness(0.76) !important;
+        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.72) !important;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #030506;
+        color: var(--paper);
+        font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", SimSun, serif;
+      }
+
+      html.start-in-archive #opening-intro {
+        display: none !important;
+      }
+
+      html.start-in-archive #boarding-intro {
+        display: none !important;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at center, transparent 44%, rgba(0, 0, 0, 0.54) 100%);
+        pointer-events: none;
+        z-index: 8;
+      }
+
+      .fit-shell {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at 50% 48%, rgba(30, 45, 50, 0.32), transparent 54%),
+          #030506;
+      }
+
+      .ui-stage {
+        position: relative;
+        container-type: inline-size;
+        width: min(100vw, calc(100vh * 1.776833));
+        aspect-ratio: 1672 / 941;
+        overflow: hidden;
+        background: #040607;
+        box-shadow: 0 0 80px rgba(0, 0, 0, 0.9);
+        filter: brightness(var(--scene-brightness));
+      }
+
+      .reference-layer {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        user-select: none;
+        -webkit-user-drag: none;
+      }
+
+      .background-clock {
+        position: absolute;
+        right: 1.15%;
+        top: 9.9%;
+        z-index: 9;
+        width: 7.9%;
+        height: 6.35%;
+        display: grid;
+        place-content: center;
+        gap: 1px;
+        color: rgba(139, 136, 126, 0.66);
+        background: rgba(3, 7, 8, 0.96);
+        box-shadow: 0 0 12px 7px rgba(3, 7, 8, 0.88);
+        font-family: "Courier New", Courier, monospace;
+        font-size: clamp(9px, 0.84vw, 15px);
+        line-height: 1.35;
+        text-align: center;
+        text-shadow: 0 0 5px rgba(126, 132, 126, 0.16);
+        pointer-events: none;
+      }
+
+      .background-clock span {
+        display: block;
+        white-space: nowrap;
+      }
+
+      .title-number-mask,
+      .program-number-mask {
+        position: absolute;
+        z-index: 9;
+        pointer-events: none;
+      }
+
+      .title-number-mask {
+        left: 54.55%;
+        top: 5.25%;
+        width: 5.15%;
+        height: 4.35%;
+        background: rgba(4, 8, 9, 0.985);
+        box-shadow: 0 0 4px 2px rgba(4, 8, 9, 0.9);
+      }
+
+      .program-number-mask {
+        left: 19.6%;
+        top: 16.75%;
+        width: 4.45%;
+        height: 4.45%;
+        background: rgba(3, 11, 14, 0.97);
+        box-shadow: 0 0 8px 5px rgba(3, 11, 14, 0.9);
+      }
+
+      .program-type-rewrite,
+      .detail-rewrite {
+        position: absolute;
+        z-index: 10;
+        color: rgba(145, 139, 124, 0.68);
+        font-size: 0.78cqw;
+        line-height: 1.42;
+        text-shadow: 0 0 4px rgba(145, 139, 124, 0.12);
+        pointer-events: none;
+      }
+
+      .program-type-rewrite::before,
+      .detail-rewrite::before {
+        content: "";
+        position: absolute;
+        inset: -2px -3px;
+        z-index: -1;
+        background: rgba(5, 12, 14, 0.97);
+        box-shadow: 0 0 3px 2px rgba(5, 12, 14, 0.82);
+      }
+
+      .program-type-rewrite {
+        left: 10.65%;
+        top: 21.95%;
+        width: 14.8%;
+        white-space: nowrap;
+      }
+
+      .detail-rewrite {
+        left: 66.45%;
+        width: 9.6%;
+      }
+
+      .detail-rewrite dt,
+      .detail-rewrite dd {
+        margin: 0;
+        font-weight: 400;
+      }
+
+      .detail-rewrite dd {
+        margin-top: 3px;
+      }
+
+      .script-rewrite {
+        top: 25.75%;
+      }
+
+      .character-rewrite {
+        top: 32.85%;
+      }
+
+      .models-rewrite {
+        top: 38.55%;
+        line-height: 1.25;
+      }
+
+      .models-rewrite::before {
+        bottom: -2px;
+      }
+
+      .time-rewrite {
+        top: 46.8%;
+      }
+
+      .time-rewrite::before {
+        display: none;
+      }
+
+      .detail-panel-rewrite {
+        position: absolute;
+        left: 65.82%;
+        top: 15.35%;
+        z-index: 10;
+        width: 9.78%;
+        height: 42.55%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.68cqw;
+        overflow: hidden;
+        padding: 0.62cqw 0.52cqw 0.52cqw;
+        color: rgba(145, 139, 124, 0.68);
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.015), transparent 18%, transparent 82%, rgba(255, 255, 255, 0.012)),
+          rgba(5, 11, 12, 0.985);
+        box-shadow: inset 0 0 0 1px rgba(134, 127, 110, 0.1);
+        font-size: 0.73cqw;
+        line-height: 1.3;
+        text-shadow: 0 0 4px rgba(145, 139, 124, 0.12);
+        pointer-events: none;
+      }
+
+      .detail-panel-heading {
+        margin: 0 0 0.25cqw;
+        padding-bottom: 0.35cqw;
+        border-bottom: 1px solid rgba(133, 126, 109, 0.16);
+        color: rgba(133, 128, 116, 0.56);
+        font-size: 0.6cqw;
+      }
+
+      .detail-panel-rewrite dl,
+      .detail-panel-rewrite dt,
+      .detail-panel-rewrite dd {
+        margin: 0;
+        font-weight: 400;
+      }
+
+      .detail-panel-rewrite dd {
+        margin-top: 0.12cqw;
+      }
+
+      .detail-panel-preview {
+        min-height: 2.35cqw;
+        margin-top: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35cqw;
+        border: 1px solid rgba(132, 124, 106, 0.3);
+        color: rgba(154, 146, 126, 0.66);
+        background: rgba(12, 17, 17, 0.64);
+        font-size: 0.66cqw;
+      }
+
+      .archive-button-mask {
+        position: absolute;
+        left: 10.05%;
+        top: 43.95%;
+        z-index: 10;
+        width: 8.55%;
+        height: 5.25%;
+        background: rgba(5, 12, 14, 0.985);
+        box-shadow: 0 0 9px 7px rgba(5, 12, 14, 0.92);
+        pointer-events: none;
+      }
+
+      .texture-zone {
+        position: absolute;
+        z-index: 9;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .texture-zone::before,
+      .texture-zone::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+      }
+
+      .texture-zone::before {
+        background: linear-gradient(
+          rgba(228, 222, 207, 0.045) 50%,
+          rgba(0, 0, 0, 0.13) 50%
+        ) 0 0 / 100% 4px;
+        mix-blend-mode: overlay;
+      }
+
+      .texture-zone::after {
+        background: repeating-linear-gradient(
+          102deg,
+          rgba(217, 207, 187, 0.035) 0 1px,
+          transparent 1px 12px
+        );
+        opacity: 0.55;
+      }
+
+      .insert-texture {
+        left: 73.7%;
+        top: 84.6%;
+        width: 24.9%;
+        height: 11.6%;
+      }
+
+      .nav-texture {
+        left: 0.9%;
+        top: 88.45%;
+        width: 65.9%;
+        height: 8.45%;
+      }
+
+      .screen-reserve {
+        position: absolute;
+        left: 31.05%;
+        top: 14.05%;
+        width: 34.15%;
+        height: 40.55%;
+        overflow: hidden;
+        border-radius: 5.4% / 8%;
+        background:
+          radial-gradient(circle at 48% 46%, rgba(44, 80, 92, 0.38), transparent 52%),
+          linear-gradient(180deg, #182d38 0%, #0b1419 72%, #050708 100%);
+        box-shadow:
+          inset 0 0 42px rgba(0, 0, 0, 0.92),
+          inset 0 0 0 2px rgba(204, 217, 210, 0.06),
+          0 0 22px rgba(0, 0, 0, 0.6);
+        z-index: 2;
+      }
+
+      .archive-video {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: contain;
+        background: #020304;
+        cursor: pointer;
+      }
+
+      .screen-reserve::before,
+      .screen-reserve::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .screen-reserve::before {
+        background:
+          linear-gradient(rgba(230, 238, 230, 0.05) 50%, rgba(0, 0, 0, 0.11) 50%) 0 0 / 100% 4px,
+          radial-gradient(circle at center, transparent 48%, rgba(0, 0, 0, 0.68) 100%);
+        z-index: 5;
+      }
+
+      .screen-reserve::after {
+        background:
+          repeating-linear-gradient(103deg, rgba(202, 217, 215, 0.09) 0 1px, transparent 1px 11px),
+          linear-gradient(90deg, rgba(255,255,255,.055), transparent 16%, transparent 84%, rgba(255,255,255,.035));
+        opacity: 0.42;
+        animation: signalBreath 3.8s steps(2) infinite;
+        z-index: 6;
+      }
+
+      .screen-inner {
+        position: absolute;
+        inset: 7.5% 7.2%;
+        display: grid;
+        place-items: end center;
+        padding: 0 5% 5.5%;
+        border: 1px solid rgba(210, 200, 182, 0.12);
+        background:
+          radial-gradient(circle at 50% 38%, rgba(74, 104, 111, 0.24), transparent 38%),
+          repeating-linear-gradient(0deg, transparent 0 18px, rgba(255,255,255,.025) 19px),
+          rgba(2, 5, 7, 0.25);
+        z-index: 3;
+        transition: opacity 0.28s ease;
+      }
+
+      .screen-reserve.has-video .screen-inner {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .standby-copy {
+        width: 100%;
+        text-align: center;
+        color: rgba(210, 200, 182, 0.74);
+        text-shadow: 0 0 10px rgba(80, 126, 130, 0.24);
+      }
+
+      .standby-copy strong {
+        display: block;
+        font-size: 1.75cqw;
+        font-weight: 700;
+        line-height: 1.12;
+        letter-spacing: 0;
+        white-space: nowrap;
+      }
+
+      .standby-copy span {
+        display: block;
+        margin-top: 0.48cqw;
+        color: rgba(130, 126, 115, 0.92);
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.84cqw;
+        line-height: 1.15;
+        white-space: nowrap;
+      }
+
+      .screen-osd {
+        position: absolute;
+        z-index: 7;
+        color: rgba(198, 205, 200, 0.7);
+        font-family: "Courier New", Courier, monospace;
+        font-size: clamp(8px, 0.72vw, 13px);
+        line-height: 1.35;
+        text-shadow: 0 0 7px rgba(111, 148, 152, 0.34);
+      }
+
+      .screen-osd.right {
+        top: 9.2%;
+        right: 8.3%;
+        color: #b33a32;
+      }
+
+      .sync-line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: -8%;
+        height: 2px;
+        background: rgba(215, 224, 213, 0.48);
+        box-shadow: 0 0 14px rgba(215, 224, 213, 0.22);
+        animation: syncLine 2.4s ease-in-out infinite;
+        z-index: 7;
+      }
+
+      .screen-reserve.has-video .sync-line {
+        display: none;
+      }
+
+      .fullscreen-button {
+        position: absolute;
+        right: 6.8%;
+        bottom: 7.2%;
+        z-index: 8;
+        width: clamp(28px, 2.1vw, 38px);
+        height: clamp(28px, 2.1vw, 38px);
+        display: grid;
+        place-items: center;
+        padding: 0;
+        border: 1px solid rgba(210, 200, 182, 0.42);
+        border-radius: 2px;
+        color: rgba(225, 218, 204, 0.9);
+        background: rgba(4, 8, 10, 0.72);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.16s ease, border-color 0.16s ease, visibility 0.16s ease;
+      }
+
+      .screen-reserve.has-video .fullscreen-button {
+        opacity: 0.78;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      .screen-reserve.has-video .fullscreen-button:hover,
+      .screen-reserve.has-video .fullscreen-button:focus-visible {
+        opacity: 1;
+        border-color: rgba(225, 218, 204, 0.78);
+      }
+
+      .fullscreen-button span {
+        font-family: Arial, sans-serif;
+        font-size: clamp(18px, 1.35vw, 25px);
+        line-height: 1;
+      }
+
+      .screen-reserve:fullscreen,
+      .screen-reserve:-webkit-full-screen {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+        background: #000;
+      }
+
+      .screen-reserve:fullscreen::before,
+      .screen-reserve:fullscreen::after {
+        display: none;
+      }
+
+      .screen-reserve:fullscreen .screen-osd,
+      .screen-reserve:fullscreen .sync-line {
+        display: none;
+      }
+
+      .screen-reserve:-webkit-full-screen::before,
+      .screen-reserve:-webkit-full-screen::after {
+        display: none;
+      }
+
+      .screen-reserve:-webkit-full-screen .screen-osd,
+      .screen-reserve:-webkit-full-screen .sync-line {
+        display: none;
+      }
+
+      .fullscreen-controls {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 20;
+        min-height: 72px;
+        display: none;
+        grid-template-columns: auto auto minmax(180px, 1fr) auto auto 120px auto;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 22px;
+        color: #e7e7e3;
+        background: rgba(0, 0, 0, 0.82);
+        border-top: 1px solid rgba(220, 220, 214, 0.22);
+      }
+
+      .screen-reserve.has-video:fullscreen .fullscreen-controls,
+      .screen-reserve.has-video:-webkit-full-screen .fullscreen-controls {
+        display: grid;
+      }
+
+      .screen-reserve:fullscreen .fullscreen-button,
+      .screen-reserve:-webkit-full-screen .fullscreen-button {
+        display: none;
+      }
+
+      .fullscreen-controls button {
+        min-width: 54px;
+        height: 38px;
+        padding: 0 11px;
+        border: 1px solid rgba(220, 220, 214, 0.34);
+        border-radius: 2px;
+        color: #e7e7e3;
+        background: rgba(13, 17, 19, 0.92);
+        cursor: pointer;
+        font: 12px/1 Arial, sans-serif;
+      }
+
+      .fullscreen-controls button:hover,
+      .fullscreen-controls button:focus-visible {
+        border-color: rgba(231, 231, 227, 0.78);
+        background: #1a2023;
+      }
+
+      .video-time {
+        min-width: 46px;
+        color: #cdd0ce;
+        font: 12px/1 "Courier New", Courier, monospace;
+        text-align: center;
+      }
+
+      .video-slider {
+        width: 100%;
+        height: 24px;
+        margin: 0;
+        appearance: none;
+        -webkit-appearance: none;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .video-slider::-webkit-slider-runnable-track {
+        height: 4px;
+        border: 1px solid rgba(210, 214, 211, 0.28);
+        background: #31383b;
+      }
+
+      .video-slider::-webkit-slider-thumb {
+        width: 15px;
+        height: 15px;
+        margin-top: -6px;
+        appearance: none;
+        -webkit-appearance: none;
+        border: 1px solid #e4e4df;
+        border-radius: 50%;
+        background: #b5483f;
+        box-shadow: 0 0 0 3px rgba(181, 72, 63, 0.18);
+      }
+
+      .video-slider::-moz-range-track {
+        height: 4px;
+        border: 1px solid rgba(210, 214, 211, 0.28);
+        background: #31383b;
+      }
+
+      .video-slider::-moz-range-thumb {
+        width: 15px;
+        height: 15px;
+        border: 1px solid #e4e4df;
+        border-radius: 50%;
+        background: #b5483f;
+      }
+
+      .volume-slider { max-width: 120px; }
+
+      @media (max-width: 720px) {
+        .fullscreen-controls {
+          grid-template-columns: auto minmax(120px, 1fr) auto 86px auto;
+          gap: 8px;
+          padding: 10px 12px;
+        }
+        .fullscreen-controls .video-time { display: none; }
+        .volume-slider { max-width: 86px; }
+      }
+
+      .hotspot {
+        position: absolute;
+        z-index: 10;
+        border: 0;
+        padding: 0;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .hotspot::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: 1px solid transparent;
+        transition: border-color 0.18s ease, background 0.18s ease;
+      }
+
+      .hotspot:hover::after {
+        border-color: rgba(210, 200, 182, 0.2);
+        background: rgba(210, 200, 182, 0.035);
+      }
+
+      .insert-hit {
+        left: 73.7%;
+        top: 84.6%;
+        width: 24.9%;
+        height: 11.6%;
+      }
+
+      .insert-hit.is-pressed {
+        transform: translateY(0.7%);
+      }
+
+      .nav-hit {
+        top: 90.1%;
+        height: 5.4%;
+      }
+
+      .nav-hit::after,
+      .insert-hit::after {
+        border-color: rgba(226, 205, 164, 0.18);
+        background: rgba(226, 205, 164, 0.045);
+        box-shadow: inset 0 0 18px rgba(221, 188, 126, 0.035);
+        -webkit-backdrop-filter: brightness(1.34) contrast(1.03) saturate(1.08);
+        backdrop-filter: brightness(1.34) contrast(1.03) saturate(1.08);
+        transition: border-color 220ms ease, background-color 220ms ease,
+          box-shadow 220ms ease, backdrop-filter 220ms ease, transform 120ms ease;
+      }
+
+      .nav-hit:hover::after,
+      .nav-hit:focus-visible::after {
+        border-color: rgba(244, 214, 158, 0.5);
+        background: rgba(238, 205, 145, 0.095);
+        box-shadow: inset 0 0 22px rgba(236, 196, 121, 0.11), 0 0 13px rgba(215, 166, 87, 0.09);
+        -webkit-backdrop-filter: brightness(1.72) contrast(1.06) saturate(1.16);
+        backdrop-filter: brightness(1.72) contrast(1.06) saturate(1.16);
+      }
+
+      .insert-hit::after {
+        border-color: rgba(220, 93, 73, 0.38);
+        background: rgba(196, 55, 39, 0.055);
+        box-shadow: inset 0 0 26px rgba(225, 69, 48, 0.08), 0 0 16px rgba(171, 38, 28, 0.09);
+        -webkit-backdrop-filter: brightness(1.3) contrast(1.05) saturate(1.16);
+        backdrop-filter: brightness(1.3) contrast(1.05) saturate(1.16);
+      }
+
+      .insert-hit:hover::after,
+      .insert-hit:focus-visible::after {
+        border-color: rgba(255, 142, 111, 0.74);
+        background: rgba(230, 69, 47, 0.105);
+        box-shadow: inset 0 0 30px rgba(255, 103, 74, 0.16), 0 0 22px rgba(213, 53, 37, 0.2);
+        -webkit-backdrop-filter: brightness(1.62) contrast(1.06) saturate(1.24);
+        backdrop-filter: brightness(1.62) contrast(1.06) saturate(1.24);
+      }
+
+      .nav-hit:active::after,
+      .insert-hit:active::after {
+        transform: translateY(1.5px);
+      }
+
+      .case-hit { left: 2.2%; width: 14.4%; }
+      .character-hit { left: 19.4%; width: 12.2%; }
+      .world-hit { left: 35%; width: 11.5%; }
+      .behind-hit { left: 50%; width: 14.8%; }
+
+      .deck-hit {
+        top: 80.4%;
+        height: 6.9%;
+      }
+
+      .eject-hit { left: 28.8%; width: 5%; }
+      .rew-hit { left: 34.6%; width: 4.5%; }
+      .play-hit { left: 39.1%; width: 4.5%; }
+      .ff-hit { left: 43.7%; width: 4.5%; }
+      .stop-hit { left: 48.3%; width: 4.5%; }
+      .pause-hit { left: 52.9%; width: 4.5%; }
+      .rec-hit { left: 57.5%; width: 5%; }
+
+      .locked-left-1 { left: 2.2%; top: 61.1%; width: 16.7%; height: 5.15%; }
+      .locked-left-2 { left: 2.25%; top: 68.05%; width: 16.65%; height: 5%; }
+      .locked-left-3 { left: 2.3%; top: 74.65%; width: 16.65%; height: 5%; }
+      .locked-right-1 { left: 85.75%; top: 62.35%; width: 14.15%; height: 5.4%; }
+      .locked-right-2 { left: 85.7%; top: 69.3%; width: 14.2%; height: 5.35%; }
+      .locked-right-3 { left: 85.65%; top: 75.85%; width: 14.25%; height: 5.15%; }
+      .behind-preview-hit { left: 66.34%; top: 52.7%; width: 8.74%; height: 4%; }
+
+      .toast {
+        position: absolute;
+        left: 50%;
+        top: 11.8%;
+        z-index: 40;
+        transform: translateX(-50%);
+        padding: 11px 20px;
+        border: 1px solid rgba(142, 40, 34, 0.68);
+        color: #e0c2ae;
+        background: linear-gradient(180deg, rgba(58, 17, 14, 0.96), rgba(18, 7, 6, 0.96));
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+        font-size: clamp(12px, 0.9vw, 16px);
+      }
+
+      .drawer,
+      .folder {
+        position: absolute;
+        z-index: 35;
+      }
+
+      .drawer {
+        left: 50%;
+        bottom: 12.5%;
+        width: min(43%, 720px);
+        transform: translateX(-50%);
+        padding: 2.1% 2.5%;
+        color: #2d241b;
+        background:
+          linear-gradient(100deg, transparent 0 50%, rgba(74, 56, 37, 0.08) 51%, transparent 53%),
+          #b9ad91;
+        border: 1px solid rgba(84, 62, 42, 0.56);
+        box-shadow: 0 18px 46px rgba(0, 0, 0, 0.68), inset 0 0 0 1px rgba(255, 247, 224, 0.3);
+        animation: rise 0.24s ease-out;
+      }
+
+      .drawer h2 {
+        margin: 0 0 14px;
+        font-size: clamp(18px, 1.8vw, 30px);
+      }
+
+      .drawer h2 span {
+        display: block;
+        margin-top: 3px;
+        font-size: 0.56em;
+        font-weight: 400;
+      }
+
+      .drawer p {
+        margin: 0 0 12px;
+        line-height: 1.65;
+        font-size: clamp(12px, 0.95vw, 16px);
+      }
+
+      .close {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        width: 32px;
+        height: 32px;
+        border: 1px solid rgba(45, 36, 27, 0.42);
+        color: inherit;
+        background: transparent;
+        cursor: pointer;
+        font-size: 22px;
+      }
+
+      .folder {
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: rgba(0, 0, 0, 0.58);
+      }
+
+      .folder-paper {
+        position: relative;
+        width: min(48%, 790px);
+        min-height: 44%;
+        padding: 2.6%;
+        color: #2d241b;
+        background:
+          linear-gradient(90deg, rgba(99, 73, 43, 0.2) 0 2px, transparent 2px 100%),
+          linear-gradient(180deg, #c2b596, #a99a7a);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.74), inset 0 0 0 1px rgba(255, 248, 228, 0.34);
+        transform: rotate(-0.6deg);
+      }
+
+      .folder-paper h2 {
+        margin: 0 0 22px;
+        font-size: clamp(20px, 2vw, 32px);
+      }
+
+      .process-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+
+      .process-grid article {
+        min-height: 150px;
+        padding: 16px;
+        border: 1px solid rgba(49, 39, 30, 0.32);
+        background: rgba(255, 246, 220, 0.16);
+      }
+
+      .process-grid span {
+        color: var(--red);
+        font-family: "Courier New", Courier, monospace;
+        font-weight: 800;
+      }
+
+      .process-grid h3 {
+        margin: 14px 0 10px;
+      }
+
+      .process-grid p {
+        margin: 0;
+        line-height: 1.6;
+        font-size: clamp(12px, 0.9vw, 15px);
+      }
+
+      .paste-note {
+        position: absolute;
+        right: 8.85%;
+        top: 27.6%;
+        z-index: 11;
+        width: 9.8%;
+        height: 15.4%;
+        display: grid;
+        place-items: center;
+        color: rgba(44, 32, 23, 0.78);
+        font-size: clamp(10px, 1.2vw, 22px);
+        line-height: 1.5;
+        text-align: center;
+        transform: rotate(-1.5deg);
+        pointer-events: none;
+        opacity: 0;
+      }
+
+      .opening-intro {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        color: #f3f3f0;
+        background: #050606;
+        font-family: Arial, Helvetica, sans-serif;
+        transition: opacity 520ms ease, visibility 520ms ease;
+      }
+
+      .opening-intro.is-closing {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .opening-stage {
+        position: relative;
+        width: min(100vw, calc(100vh * 1672 / 941));
+        aspect-ratio: 1672 / 941;
+        overflow: hidden;
+        background: #050606;
+      }
+
+      .opening-layout {
+        --opening-scale: 1;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 2;
+        width: 1920px;
+        height: 1080px;
+        transform: scale(var(--opening-scale));
+        transform-origin: left top;
+      }
+
+      .opening-video,
+      .opening-dim {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .opening-video {
+        object-fit: contain;
+        background: #050606;
+      }
+
+      .opening-dim {
+        background: rgba(7, 9, 10, 0.28);
+        pointer-events: none;
+        transition: background 360ms ease;
+      }
+
+      .opening-intro.is-title-phase .opening-dim {
+        background: rgba(0, 0, 0, 0.04);
+      }
+
+      .opening-intro.is-landing .opening-dim {
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      .opening-console {
+        position: absolute;
+        left: 7%;
+        top: 21.5%;
+        width: 580px;
+        transition: opacity 190ms ease, transform 190ms ease;
+      }
+
+      .opening-intro.is-title-phase .opening-console,
+      .opening-intro.is-landing .opening-console {
+        opacity: 0;
+        transform: translateY(-12px);
+        pointer-events: none;
+      }
+
+      .opening-kicker,
+      .opening-meta,
+      .opening-percent {
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .music-console {
+        position: absolute;
+        top: 1.55%;
+        right: 1.15%;
+        z-index: 13;
+        width: 17.2%;
+        height: 6.6%;
+        display: grid;
+        grid-template-columns: 2.2cqw minmax(0, 1fr) 3.35cqw;
+        align-items: center;
+        gap: 0.55cqw;
+        padding: 0.48cqw 0.55cqw;
+        border: 1px solid rgba(145, 134, 112, 0.5);
+        border-radius: 3px;
+        color: rgba(218, 207, 184, 0.82);
+        background: rgba(5, 8, 9, 0.92);
+        box-shadow:
+          inset 0 0 0 2px rgba(0, 0, 0, 0.88),
+          inset 0 0 0 3px rgba(119, 108, 86, 0.16),
+          0 6px 18px rgba(0, 0, 0, 0.5);
+      }
+
+      .music-console::before {
+        position: absolute;
+        left: 0.55cqw;
+        bottom: -0.16cqw;
+        content: "AUDIO AUX / 01";
+        padding: 0 0.25cqw;
+        color: rgba(156, 143, 116, 0.56);
+        background: #070a0b;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.48cqw;
+        line-height: 1;
+      }
+
+      .music-console button {
+        height: 2.15cqw;
+        min-width: 0;
+        padding: 0;
+        border: 1px solid rgba(154, 141, 114, 0.52);
+        border-radius: 2px;
+        color: rgba(229, 218, 196, 0.9);
+        background: #111312;
+        font-family: "Archive Eva Mincho", "Songti SC", serif;
+        font-size: 0.68cqw;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .music-console button:hover,
+      .music-console button:focus-visible {
+        color: #15130f;
+        background: #ded2bb;
+        outline: 1px solid rgba(231, 185, 103, 0.8);
+        outline-offset: 2px;
+      }
+
+      .music-toggle {
+        font-family: Arial, sans-serif !important;
+        font-size: 0.9cqw !important;
+      }
+
+      .music-readout {
+        min-width: 0;
+        display: grid;
+        gap: 0.2cqw;
+      }
+
+      .music-readout small,
+      .music-track-title {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .music-readout small {
+        color: rgba(155, 143, 118, 0.62);
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.48cqw;
+        line-height: 1;
+      }
+
+      .music-track-title {
+        color: rgba(224, 214, 192, 0.84);
+        font-size: 0.64cqw;
+        font-weight: 600;
+        line-height: 1.1;
+      }
+
+      .music-volume {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 100%;
+        height: 7px;
+        margin: 1px 0 0;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .music-volume::-webkit-slider-runnable-track {
+        height: 2px;
+        border-radius: 1px;
+        background: rgba(151, 137, 109, 0.46);
+        box-shadow: inset 0 1px rgba(0, 0, 0, 0.62);
+      }
+
+      .music-volume::-webkit-slider-thumb {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 7px;
+        height: 7px;
+        margin-top: -2.5px;
+        border: 1px solid #d2a15d;
+        border-radius: 50%;
+        background: #8c612b;
+        box-shadow: 0 0 3px rgba(211, 158, 78, 0.42);
+      }
+
+      .music-volume::-moz-range-track {
+        height: 2px;
+        border: 0;
+        border-radius: 1px;
+        background: rgba(151, 137, 109, 0.46);
+        box-shadow: inset 0 1px rgba(0, 0, 0, 0.62);
+      }
+
+      .music-volume::-moz-range-thumb {
+        width: 7px;
+        height: 7px;
+        border: 1px solid #d2a15d;
+        border-radius: 50%;
+        background: #8c612b;
+        box-shadow: 0 0 3px rgba(211, 158, 78, 0.42);
+      }
+
+      .music-console.is-playing {
+        border-color: rgba(174, 133, 72, 0.72);
+      }
+
+      .music-console.is-playing::after {
+        position: absolute;
+        top: 0.35cqw;
+        right: 0.35cqw;
+        width: 0.28cqw;
+        height: 0.28cqw;
+        content: "";
+        border-radius: 50%;
+        background: #d4452f;
+        box-shadow: 0 0 0.45cqw rgba(212, 69, 47, 0.7);
+      }
+
+      .opening-kicker {
+        margin: 0 0 14px;
+        font-size: 23px;
+      }
+
+      .opening-console h1 {
+        margin: 0 0 28px;
+        font-family: Impact, "Arial Narrow", Arial, sans-serif;
+        font-size: 94px;
+        font-style: italic;
+        font-weight: 700;
+        line-height: 0.95;
+      }
+
+      .opening-progress-row {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin: 0 0 28px;
+      }
+
+      .opening-progress-track {
+        flex: 1;
+        height: 14px;
+        overflow: hidden;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .opening-progress-bar {
+        width: 0;
+        height: 100%;
+        background: #fff;
+      }
+
+      .opening-percent {
+        width: 72px;
+        font-size: 25px;
+      }
+
+      .opening-copy {
+        margin: 0 0 8px;
+        font-family: "EVA-Matisse-Classic", "FOT-Matisse Pro", "Archive Eva Mincho", "Hiragino Mincho ProN", "Songti SC", serif;
+        font-size: 26px;
+        font-weight: 800;
+        line-height: 1.5;
+      }
+
+      .opening-copy.subtle {
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 21px;
+      }
+
+      .opening-button {
+        min-height: 64px;
+        margin-top: 34px;
+        padding: 0 30px;
+        border: 1px solid rgba(255, 255, 255, 0.75);
+        border-radius: 2px;
+        color: #fff;
+        background: rgba(8, 9, 10, 0.34);
+        font-family: "EVA-Matisse-Classic", "FOT-Matisse Pro", "Archive Eva Mincho", "Hiragino Mincho ProN", "Songti SC", serif;
+        font-size: 22px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .opening-button:hover,
+      .opening-button:focus-visible {
+        background: #fff;
+        color: #111;
+        outline: none;
+      }
+
+      .opening-start-button {
+        min-width: 208px;
+        border-color: rgba(226, 203, 162, 0.9);
+        color: #15130f;
+        background: #eee2cc;
+      }
+
+      .opening-intro:not(.awaiting-entry) .opening-start-button,
+      .opening-intro.awaiting-entry .skip-opening {
+        display: none;
+      }
+
+      .opening-meta {
+        position: absolute;
+        left: 6.3%;
+        bottom: 7.4%;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 14px;
+        line-height: 1.45;
+        white-space: pre-line;
+        transition: opacity 300ms ease;
+      }
+
+      .opening-intro.is-title-phase .opening-meta,
+      .opening-intro.is-landing .opening-meta {
+        opacity: 0;
+      }
+
+      .opening-actions {
+        position: absolute;
+        left: 50%;
+        bottom: 5.8%;
+        width: 82%;
+        height: 245px;
+        padding: 66px 130px 48px;
+        border: 3px solid #4b4840;
+        border-radius: 8px;
+        background:
+          linear-gradient(90deg, transparent 0 82px, rgba(125, 116, 96, 0.24) 82px 84px, transparent 84px calc(100% - 84px), rgba(125, 116, 96, 0.24) calc(100% - 84px) calc(100% - 82px), transparent calc(100% - 82px)),
+          repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.012) 0 1px, transparent 1px 4px),
+          linear-gradient(180deg, #181817 0%, #090a0a 48%, #111110 100%);
+        box-shadow:
+          0 24px 70px rgba(0, 0, 0, 0.72),
+          inset 0 0 0 2px #111,
+          inset 0 0 0 5px rgba(137, 126, 104, 0.18),
+          inset 0 22px 34px rgba(255, 255, 255, 0.025);
+        opacity: 0;
+        transform: translate(-50%, 12px) scale(0.5);
+        transform-origin: center bottom;
+        pointer-events: none;
+        transition: opacity 220ms ease, transform 220ms ease;
+      }
+
+      .opening-actions::before,
+      .opening-actions::after {
+        position: absolute;
+        top: 86px;
+        color: rgba(191, 179, 153, 0.64);
+        font-family: "Courier New", Courier, monospace;
+        font-size: 15px;
+        line-height: 1.15;
+        white-space: pre;
+        letter-spacing: 0;
+      }
+
+      .opening-actions::before {
+        left: 25px;
+        content: "DNYTV1\A UI UNIT";
+      }
+
+      .opening-actions::after {
+        right: 21px;
+        content: "BROADCAST\A SYSTEM\A ////";
+        text-align: right;
+      }
+
+      .opening-intro.is-title-phase .opening-actions,
+      .opening-intro.is-landing .opening-actions {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(0.5);
+        pointer-events: auto;
+      }
+
+      .opening-action-deck {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 26px;
+        width: 100%;
+        height: 100%;
+        padding: 10px;
+        border: 2px solid #332f29;
+        border-radius: 7px;
+        background: #080909;
+        box-shadow:
+          0 0 0 7px #151513,
+          0 0 0 9px #443f36,
+          inset 0 0 22px rgba(0, 0, 0, 0.92);
+      }
+
+      .opening-actions .opening-button {
+        position: relative;
+        min-width: 0;
+        min-height: 0;
+        margin: 0;
+        padding: 0 72px;
+        overflow: hidden;
+        border: 3px double #6c6252;
+        border-radius: 5px;
+        color: #e7ddca;
+        background:
+          repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 2px, transparent 2px 5px),
+          linear-gradient(180deg, #1c1b18, #0c0d0c 52%, #171612);
+        box-shadow:
+          inset 0 0 0 2px #151310,
+          inset 0 0 24px rgba(0, 0, 0, 0.72),
+          0 0 0 3px #080909;
+        font-size: 42px;
+        line-height: 1;
+        text-shadow: 0 2px 2px #000;
+      }
+
+      .opening-actions .opening-button.primary {
+        border-color: #9c8969;
+        color: #15130f;
+        background:
+          repeating-linear-gradient(0deg, rgba(73, 55, 31, 0.08) 0 2px, transparent 2px 6px),
+          linear-gradient(180deg, #fbf3e1 0%, #e6dbc6 54%, #cbbda4 100%);
+        box-shadow:
+          inset 0 0 0 2px #f7ecd5,
+          inset 0 0 18px rgba(97, 69, 35, 0.3),
+          0 0 0 3px #080909,
+          0 0 18px rgba(229, 185, 112, 0.2);
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.52);
+      }
+
+      .opening-actions .opening-button::before {
+        position: absolute;
+        top: 50%;
+        content: "";
+        width: 0;
+        height: 0;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        transform: translateY(-50%);
+      }
+
+      .opening-actions .opening-button.primary::before {
+        left: 28px;
+        border-left: 15px solid #5f5544;
+      }
+
+      .opening-actions .opening-contact::before {
+        right: 28px;
+        border-left: 15px solid #9f9278;
+      }
+
+      .opening-actions .opening-button:hover,
+      .opening-actions .opening-button:focus-visible {
+        filter: brightness(1.14);
+        outline: 2px solid rgba(240, 198, 124, 0.72);
+        outline-offset: 4px;
+      }
+
+      .opening-unit-mark,
+      .opening-status-mark {
+        position: absolute;
+        bottom: 17px;
+        color: rgba(188, 174, 145, 0.58);
+        font-family: "Courier New", Courier, monospace;
+        font-size: 15px;
+        letter-spacing: 0;
+      }
+
+      .opening-unit-mark {
+        left: 145px;
+      }
+
+      .opening-status-mark {
+        right: 145px;
+      }
+
+      .opening-indicator {
+        position: absolute;
+        top: 50%;
+        width: 15px;
+        height: 15px;
+        border: 3px solid #4f4535;
+        border-radius: 50%;
+        transform: translateY(-50%);
+        background: #ff9d24;
+        box-shadow: 0 0 7px #ff8a00, 0 0 16px rgba(255, 124, 0, 0.68);
+      }
+
+      .opening-indicator.left {
+        left: 39px;
+      }
+
+      .opening-indicator.right {
+        right: 39px;
+        border-color: #4a2924;
+        background: #cf271e;
+        box-shadow: 0 0 7px #df221a, 0 0 16px rgba(194, 27, 22, 0.62);
+      }
+
+      .opening-contact-status {
+        position: absolute;
+        right: 10%;
+        bottom: 2.1%;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.72);
+        font-family: "Courier New", Courier, monospace;
+        font-size: 12px;
+      }
+
+      .opening-sound {
+        position: absolute;
+        right: 5%;
+        top: 5.5%;
+        min-width: 164px;
+        min-height: 52px;
+        padding: 0 20px;
+        border: 1px solid rgba(255, 255, 255, 0.62);
+        border-radius: 2px;
+        color: #fff;
+        background: rgba(3, 4, 5, 0.58);
+        font-family: "EVA-Matisse-Classic", "FOT-Matisse Pro", "Archive Eva Mincho", "Hiragino Mincho ProN", "Songti SC", serif;
+        font-size: 18px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .opening-sound:hover,
+      .opening-sound:focus-visible {
+        color: #111;
+        background: #fff;
+        outline: none;
+      }
+
+      .opening-intro.awaiting-entry .opening-sound {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .opening-intro.needs-audio-start .opening-sound {
+        left: 50%;
+        right: auto;
+        top: 50%;
+        min-width: 292px;
+        min-height: 76px;
+        padding: 0 30px;
+        transform: translate(-50%, -50%);
+        border-color: rgba(255, 255, 255, 0.82);
+        background: rgba(3, 4, 5, 0.86);
+        font-size: 23px;
+      }
+
+      .home-button {
+        position: absolute;
+        left: auto;
+        right: 19.05%;
+        top: 1.55%;
+        z-index: 12;
+        width: 10.8%;
+        height: 6.6%;
+        border: 1px solid rgba(137, 132, 119, 0.32);
+        border-radius: 3px;
+        color: rgba(169, 162, 146, 0.72);
+        background: rgba(5, 8, 9, 0.88);
+        box-shadow:
+          inset 0 0 0 2px rgba(0, 0, 0, 0.82),
+          inset 0 0 0 3px rgba(119, 108, 86, 0.12),
+          0 6px 18px rgba(0, 0, 0, 0.42);
+        font-family: "Archive Eva Mincho", "Songti SC", serif;
+        font-size: 0.72cqw;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .home-button:hover,
+      .home-button:focus-visible {
+        color: rgba(225, 218, 200, 0.92);
+        border-color: rgba(190, 181, 160, 0.62);
+        background: rgba(10, 17, 18, 0.92);
+        outline: none;
+      }
+
+      @keyframes signalBreath {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 0.56; }
+      }
+
+      @keyframes syncLine {
+        0% { top: -8%; opacity: 0; }
+        12% { opacity: 1; }
+        86% { opacity: 1; }
+        100% { top: 108%; opacity: 0; }
+      }
+
+      @keyframes rise {
+        from { opacity: 0; transform: translate(-50%, 24px); }
+      }
+
+      @media (max-aspect-ratio: 1672 / 941) {
+        .ui-stage {
+          width: 100vw;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    <section class="boarding-intro" id="boarding-intro" aria-label="丹港国际空港登机牌入口">
+      <div class="boarding-background-layer" aria-hidden="true"></div>
+      <div class="home-screen boarding-home-screen" aria-hidden="true">
+        <p>DANGANG INTERNATIONAL AIRPORT / ACCESS CHANNEL</p>
+        <h1>丹港 <span>DANGANG</span></h1>
+        <p>进入丹港国际空港系统</p>
+        <span class="boarding-home-enter">ENTER / 进入主页</span>
+      </div>
+      <div class="boarding-pass-stage">
+        <div class="boarding-pass-ticket">
+          <div class="boarding-pass-main" aria-hidden="true"></div>
+          <i class="tear-edge tear-edge-main" aria-hidden="true"></i>
+          <button
+            class="boarding-pass-stub"
+            type="button"
+            aria-label="撕下登机牌副券进入丹港"
+            data-no-mechanical-sfx
+          >
+            <i class="tear-edge tear-edge-stub" aria-hidden="true"></i>
+          </button>
+          <div class="tear-particles" aria-hidden="true"></div>
+          <div class="boarding-interaction-hint" aria-hidden="true">
+            <span>撕下进入</span>
+          </div>
+        </div>
+      </div>
+      <p class="boarding-access-note">DANGANG AIR PASS / DRAG OR CLICK TO BOARD</p>
+    </section>
+    <section class="opening-intro awaiting-entry" id="opening-intro" aria-label="王海街档案开场动画">
+      <div class="opening-stage">
+        <video class="opening-video" playsinline preload="auto" aria-label="丹港风云录开场动画">
+          <source src="../public/assets/danhabor-opening.mp4" type="video/mp4" />
+        </video>
+        <div class="opening-dim" aria-hidden="true"></div>
+        <div class="opening-layout">
+          <button class="opening-sound" type="button" aria-label="开启声音开场动画">开启声音</button>
+          <div class="opening-console">
+            <p class="opening-kicker">BOOTING</p>
+            <h1>WANG HAIJIE<br />ARCHIVE</h1>
+            <div class="opening-progress-row" aria-label="开场动画进度">
+              <div class="opening-progress-track"><div class="opening-progress-bar"></div></div>
+              <span class="opening-percent">0%</span>
+            </div>
+            <p class="opening-copy">欢迎进入王海街的故事档案</p>
+            <p class="opening-copy subtle">个人作品集 / 世界观入口</p>
+            <button class="opening-button skip-opening" type="button">跳过动画</button>
+          </div>
+          <p class="opening-meta">PLAY
+PM 11:08
+OCT. 30 1989
+ARCHIVE // 63-92 ALT</p>
+          <div class="opening-actions">
+            <span class="opening-indicator left" aria-hidden="true"></span>
+            <span class="opening-indicator right" aria-hidden="true"></span>
+            <div class="opening-action-deck">
+              <button class="opening-button primary enter-archive" type="button">查看作品</button>
+              <button class="opening-button opening-contact" type="button">和我聊聊</button>
+            </div>
+            <span class="opening-unit-mark" aria-hidden="true">CTRL-02</span>
+            <span class="opening-status-mark" aria-hidden="true">STATUS</span>
+          </div>
+          <p class="opening-contact-status" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+    <div class="fit-shell">
+      <section class="ui-stage" aria-label="丹港风云录 001 档案播放系统">
+        <img class="reference-layer" src="./danhabor-ui-reference.png" alt="" />
+        <time class="background-clock" aria-label="当前本地日期和时间">
+          <span id="background-date">2026.07.19</span>
+          <span id="background-time">00:00:00</span>
+        </time>
+        <audio class="archive-bgm" preload="metadata" loop>
+          <source src="../public/assets/macaroni-detective-theme.mp3" type="audio/mpeg" />
+        </audio>
+        <section class="music-console" aria-label="档案室背景音乐控制器">
+          <button class="music-toggle" type="button" aria-label="播放背景音乐" title="播放背景音乐">▶</button>
+          <div class="music-readout">
+            <small>ARCHIVE BGM</small>
+            <strong class="music-track-title">マカロニ刑事のテーマ</strong>
+            <input class="music-volume" type="range" min="0" max="1" step="0.01" value="0.46" aria-label="背景音乐音量" />
+          </div>
+          <button class="music-change" type="button" title="选择本地音乐">换歌</button>
+          <input class="music-file" type="file" accept="audio/*" hidden />
+        </section>
+        <div class="title-number-mask" aria-hidden="true"></div>
+        <button class="home-button" type="button" aria-label="返回开场动画">← 返回首页</button>
+        <div class="program-number-mask" aria-hidden="true"></div>
+        <div class="program-type-rewrite" aria-label="类型：架空、智斗、剧情">类型：架空 / 智斗 / 剧情</div>
+        <section class="detail-panel-rewrite" aria-label="节目详情">
+          <div class="detail-panel-heading">节目详情 / DETAILS</div>
+          <dl><dt>导演</dt><dd>王海街</dd></dl>
+          <dl><dt>编剧</dt><dd>王海街</dd></dl>
+          <dl><dt>角色设计</dt><dd>个人手稿 / Ai辅助</dd></dl>
+          <dl><dt>制作模型</dt><dd>Seedance2.0,<br />Gemini3.1Pro,<br />ChatGPT5.5.</dd></dl>
+          <dl><dt>制作时间</dt><dd>2026.04</dd></dl>
+          <div class="detail-panel-preview">制作花絮预览 <span aria-hidden="true">▶</span></div>
+        </section>
+        <div class="archive-button-mask" aria-hidden="true"></div>
+        <section class="screen-reserve" aria-label="电视机屏幕预留区">
+          <video
+            class="archive-video"
+            preload="metadata"
+            playsinline
+            poster="https://davewang012.github.io/danhabor/assets/danhabor-001-cover.jpg"
+            aria-label="丹港风云录 001 正片"
+          >
+            <source src="https://davewang012.github.io/danhabor/assets/danhabor-001.mp4" type="video/mp4" />
+          </video>
+          <div class="screen-inner">
+            <div class="standby-copy">
+              <strong>等待接入画面</strong>
+              <span>STANDBY FOR ARCHIVE SIGNAL</span>
+            </div>
+          </div>
+          <div class="screen-osd right">REC <b>●</b></div>
+          <i class="sync-line"></i>
+          <button class="fullscreen-button" type="button" aria-label="切换全屏" title="全屏播放">
+            <span aria-hidden="true">⛶</span>
+          </button>
+          <div class="fullscreen-controls" aria-label="全屏播放控制">
+            <button class="play-toggle" type="button" aria-label="播放或暂停">PLAY</button>
+            <span class="video-time current-time">00:00</span>
+            <input class="video-slider progress-slider" type="range" min="0" max="0" value="0" step="0.05" aria-label="播放进度" />
+            <span class="video-time duration-time">00:00</span>
+            <button class="volume-toggle" type="button" aria-label="静音" title="静音">VOL</button>
+            <input class="video-slider volume-slider" type="range" min="0" max="1" value="1" step="0.01" aria-label="视频音量" />
+            <button class="fullscreen-exit" type="button" aria-label="退出全屏">EXIT</button>
+          </div>
+        </section>
+
+        <div class="texture-zone insert-texture" aria-hidden="true"></div>
+        <div class="texture-zone nav-texture" aria-hidden="true"></div>
+
+        <button class="hotspot insert-hit" type="button" aria-label="插入录像带"></button>
+        <button class="hotspot deck-hit eject-hit" type="button" data-control="EJECT" aria-label="EJECT"></button>
+        <button class="hotspot deck-hit rew-hit" type="button" data-control="REW" aria-label="REW"></button>
+        <button class="hotspot deck-hit play-hit" type="button" data-control="PLAY" aria-label="PLAY"></button>
+        <button class="hotspot deck-hit ff-hit" type="button" data-control="FF" aria-label="FF"></button>
+        <button class="hotspot deck-hit stop-hit" type="button" data-control="STOP" aria-label="STOP"></button>
+        <button class="hotspot deck-hit pause-hit" type="button" data-control="PAUSE" aria-label="PAUSE"></button>
+        <button class="hotspot deck-hit rec-hit" type="button" data-control="REC" aria-label="REC"></button>
+
+        <a class="hotspot locked-left-1" href="./danhabor-origin.html" aria-label="录像带 002 起源档案"></a>
+        <button class="hotspot locked-left-2" type="button" aria-label="夜雨追踪 003"></button>
+        <button class="hotspot locked-left-3" type="button" aria-label="绣蚀之城 004"></button>
+        <button class="hotspot locked-right-1" type="button" aria-label="边缘证词 005"></button>
+        <button class="hotspot locked-right-2" type="button" aria-label="沉默代码 006"></button>
+        <button class="hotspot locked-right-3" type="button" aria-label="黑洲迷雾 007"></button>
+        <button class="hotspot behind-preview-hit" type="button" aria-label="制作花絮预览"></button>
+
+        <a class="hotspot nav-hit case-hit" href="./danhabor-cases.html" aria-label="打开案件档案"></a>
+        <a class="hotspot nav-hit character-hit" href="./danhabor-characters.html" aria-label="打开角色图鉴"></a>
+        <a class="hotspot nav-hit world-hit" href="./danhabor-world.html" aria-label="打开世界观设定"></a>
+        <a class="hotspot nav-hit behind-hit" href="./danhabor-behind.html" aria-label="打开幕后制作"></a>
+
+        <div id="toast" class="toast" hidden></div>
+      </section>
+    </div>
+
+    <script>
+      const openingIntro = document.querySelector("#opening-intro");
+      const openingStage = document.querySelector(".opening-stage");
+      const openingLayout = document.querySelector(".opening-layout");
+      const openingVideo = document.querySelector(".opening-video");
+      const openingProgressBar = document.querySelector(".opening-progress-bar");
+      const openingPercent = document.querySelector(".opening-percent");
+      const openingContactStatus = document.querySelector(".opening-contact-status");
+      const openingSoundButton = document.querySelector(".opening-sound");
+      const archiveBgm = document.querySelector(".archive-bgm");
+      const musicConsole = document.querySelector(".music-console");
+      const musicToggle = document.querySelector(".music-toggle");
+      const musicTitle = document.querySelector(".music-track-title");
+      const musicVolume = document.querySelector(".music-volume");
+      const musicChange = document.querySelector(".music-change");
+      const musicFile = document.querySelector(".music-file");
+      const homeButton = document.querySelector(".home-button");
+      const OPENING_TITLE_START = 16.9;
+      const OPENING_LOOP_END = 21.4;
+      const startInArchive = new URLSearchParams(window.location.search).get("view") === "archive";
+      let openingHasStarted = false;
+      let localMusicUrl = "";
+      openingVideo.defaultMuted = false;
+      openingVideo.muted = false;
+      openingVideo.volume = 1;
+      archiveBgm.volume = Number(musicVolume.value);
+
+      const updateMusicState = () => {
+        const isPlaying = !archiveBgm.paused;
+        musicConsole.classList.toggle("is-playing", isPlaying);
+        musicToggle.textContent = isPlaying ? "Ⅱ" : "▶";
+        musicToggle.setAttribute("aria-label", isPlaying ? "暂停背景音乐" : "播放背景音乐");
+        musicToggle.title = isPlaying ? "暂停背景音乐" : "播放背景音乐";
+      };
+
+      const getGlobalMusicPlayer = () => {
+        try {
+          return window.DanhaborMusicPlayer || window.parent?.DanhaborMusicPlayer;
+        } catch {
+          return window.DanhaborMusicPlayer;
+        }
+      };
+
+      const stopBackgroundMusic = (reset = true) => {
+        archiveBgm.pause();
+        if (reset) archiveBgm.currentTime = 0;
+        getGlobalMusicPlayer()?.pause({ reset });
+        updateMusicState();
+      };
+
+      const startBackgroundMusic = async () => {
+        openingVideo.pause();
+        await getGlobalMusicPlayer()?.play();
+        updateMusicState();
+      };
+      if (startInArchive) {
+        openingIntro.hidden = true;
+        openingVideo.autoplay = false;
+        openingVideo.pause();
+      }
+
+      const fitOpeningToVideo = () => {
+        const videoWidth = openingVideo.videoWidth || 1920;
+        const videoHeight = openingVideo.videoHeight || 1080;
+        const mainStage = document.querySelector(".ui-stage").getBoundingClientRect();
+        const stageWidth = mainStage.width;
+        const stageHeight = mainStage.height;
+        const scale = Math.min(stageWidth / videoWidth, stageHeight / videoHeight);
+        const renderedWidth = videoWidth * scale;
+        const renderedHeight = videoHeight * scale;
+
+        openingStage.style.width = `${stageWidth}px`;
+        openingStage.style.height = `${stageHeight}px`;
+        openingStage.style.aspectRatio = "1672 / 941";
+        openingLayout.style.left = `${(stageWidth - renderedWidth) / 2}px`;
+        openingLayout.style.top = `${(stageHeight - renderedHeight) / 2}px`;
+        openingLayout.style.setProperty("--opening-scale", scale);
+      };
+
+      const updateOpening = () => {
+        const time = openingVideo.currentTime || 0;
+        const hasLanded = openingIntro.classList.contains("is-landing");
+
+        if (!hasLanded) {
+          const progress = Math.min(100, Math.round((time / OPENING_LOOP_END) * 100));
+          openingProgressBar.style.width = `${progress}%`;
+          openingPercent.textContent = `${progress}%`;
+          openingIntro.classList.toggle("is-title-phase", time >= OPENING_TITLE_START);
+        }
+
+        if (time >= OPENING_LOOP_END) {
+          if (!hasLanded) {
+            openingIntro.classList.add("is-landing");
+          }
+          openingVideo.currentTime = 0;
+          openingIntro.classList.remove("is-title-phase");
+          openingVideo.play().catch(() => {});
+        }
+      };
+
+      const updateOpeningSound = () => {
+        const muted = openingVideo.muted || openingVideo.volume === 0;
+        const label = muted ? "开启声音" : openingVideo.paused ? "播放声音" : "关闭声音";
+        openingSoundButton.textContent = label;
+        openingSoundButton.setAttribute("aria-label", `${label}开场动画`);
+      };
+
+      const tryStartOpening = async () => {
+        if (openingIntro.hidden) {
+          openingVideo.pause();
+          return;
+        }
+        if (!openingHasStarted) return;
+
+        openingVideo.muted = false;
+        try {
+          await openingVideo.play();
+          openingIntro.classList.remove("needs-audio-start");
+        } catch {
+          // Browsers may reject unmuted autoplay without a prior user gesture.
+          // Keep the animation moving and leave the sound control available.
+          openingVideo.muted = true;
+          await openingVideo.play().catch(() => {});
+        }
+        updateOpeningSound();
+      };
+
+      const beginOpening = async () => {
+        stopBackgroundMusic();
+        openingHasStarted = true;
+        openingIntro.classList.remove("awaiting-entry", "is-title-phase", "is-landing");
+        openingVideo.pause();
+        openingVideo.currentTime = 0;
+        openingVideo.volume = 1;
+        openingVideo.muted = false;
+        openingProgressBar.style.width = "0%";
+        openingPercent.textContent = "0%";
+        await tryStartOpening();
+      };
+
+      const openOpening = () => {
+        stopBackgroundMusic();
+        document.querySelector(".archive-video")?.pause();
+        const url = new URL(window.location.href);
+        url.searchParams.delete("view");
+        window.history.replaceState({}, "", url);
+        document.documentElement.classList.remove("start-in-archive");
+        openingIntro.hidden = false;
+        openingIntro.classList.remove("is-closing", "is-title-phase", "is-landing");
+        openingIntro.classList.add("awaiting-entry");
+        openingContactStatus.textContent = "";
+        openingProgressBar.style.width = "0%";
+        openingPercent.textContent = "0%";
+        openingVideo.currentTime = 0;
+        openingHasStarted = false;
+        openingVideo.muted = false;
+        updateOpeningSound();
+      };
+
+      window.DanhaborOpening = {
+        begin: beginOpening,
+        reset: openOpening,
+      };
+
+      const closeOpening = () => {
+        if (openingIntro.classList.contains("is-closing")) return;
+        openingIntro.classList.add("is-closing");
+        openingVideo.pause();
+        setTimeout(() => {
+          openingIntro.hidden = true;
+        }, 540);
+      };
+
+      openingVideo.addEventListener("timeupdate", updateOpening);
+      openingVideo.addEventListener("loadedmetadata", fitOpeningToVideo);
+      openingVideo.addEventListener("ended", () => {
+        openingIntro.classList.add("is-landing");
+        openingIntro.classList.remove("is-title-phase");
+        openingVideo.currentTime = 0;
+        openingVideo.play().catch(() => {});
+      });
+      openingVideo.addEventListener("canplay", () => {
+        tryStartOpening();
+      }, { once: true });
+      openingVideo.addEventListener("error", closeOpening);
+      window.addEventListener("resize", () => requestAnimationFrame(fitOpeningToVideo));
+      fitOpeningToVideo();
+      const enterArchive = () => {
+        closeOpening();
+        startBackgroundMusic();
+      };
+
+      document.querySelector(".skip-opening").addEventListener("click", enterArchive);
+      document.querySelector(".enter-archive").addEventListener("click", enterArchive);
+      openingSoundButton.addEventListener("click", async () => {
+        if (openingVideo.muted || openingVideo.volume === 0) {
+          openingVideo.volume = 1;
+          openingVideo.muted = false;
+          await openingVideo.play().catch(() => {});
+        } else if (openingVideo.paused) {
+          await openingVideo.play().catch(() => {});
+        } else {
+          openingVideo.muted = true;
+        }
+        updateOpeningSound();
+      });
+      homeButton.addEventListener("click", openOpening);
+      homeButton.addEventListener("click", () => window.DanhaborBoardingPass?.reset());
+      document.querySelector(".opening-contact").addEventListener("click", () => {
+        openingContactStatus.textContent = "CONTACT CHANNEL / 待接入";
+      });
+      updateOpeningSound();
+      openingVideo.addEventListener("play", () => {
+        stopBackgroundMusic();
+        openingIntro.classList.remove("needs-audio-start");
+        updateOpeningSound();
+      });
+      openingVideo.addEventListener("pause", updateOpeningSound);
+
+      const stage = document.querySelector(".ui-stage");
+      const toast = document.querySelector("#toast");
+      const insert = document.querySelector(".insert-hit");
+      const backgroundDate = document.querySelector("#background-date");
+      const backgroundTime = document.querySelector("#background-time");
+      const screen = document.querySelector(".screen-reserve");
+      const video = document.querySelector(".archive-video");
+      const fullscreenButton = document.querySelector(".fullscreen-button");
+      const fullscreenControls = document.querySelector(".fullscreen-controls");
+      const playToggle = document.querySelector(".play-toggle");
+      const progressSlider = document.querySelector(".progress-slider");
+      const currentTimeLabel = document.querySelector(".current-time");
+      const durationTimeLabel = document.querySelector(".duration-time");
+      const volumeToggle = document.querySelector(".volume-toggle");
+      const volumeSlider = document.querySelector(".volume-slider");
+      const fullscreenExit = document.querySelector(".fullscreen-exit");
+      const screenCopy = document.querySelector(".standby-copy strong");
+      const screenSub = document.querySelector(".standby-copy span");
+      let isScrubbing = false;
+      let lastVolume = 1;
+
+      const showToast = (message) => {
+        toast.textContent = message;
+        toast.hidden = false;
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => {
+          toast.hidden = true;
+        }, 2200);
+      };
+
+      const updateBackgroundClock = () => {
+        const now = new Date();
+        const pad = (value) => String(value).padStart(2, "0");
+        backgroundDate.textContent = `${now.getFullYear()}.${pad(now.getMonth() + 1)}.${pad(now.getDate())}`;
+        backgroundTime.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      };
+
+      updateBackgroundClock();
+      setInterval(updateBackgroundClock, 1000);
+
+      const formatVideoTime = (seconds) => {
+        if (!Number.isFinite(seconds) || seconds < 0) return "00:00";
+        const total = Math.floor(seconds);
+        const hours = Math.floor(total / 3600);
+        const minutes = Math.floor((total % 3600) / 60);
+        const remaining = total % 60;
+        const pad = (value) => String(value).padStart(2, "0");
+        return hours ? `${hours}:${pad(minutes)}:${pad(remaining)}` : `${pad(minutes)}:${pad(remaining)}`;
+      };
+
+      const updateTimeline = () => {
+        const duration = Number.isFinite(video.duration) ? video.duration : 0;
+        progressSlider.max = duration;
+        if (!isScrubbing) progressSlider.value = Math.min(video.currentTime || 0, duration || 0);
+        currentTimeLabel.textContent = formatVideoTime(video.currentTime);
+        durationTimeLabel.textContent = formatVideoTime(duration);
+      };
+
+      const updatePlayState = () => {
+        playToggle.textContent = video.paused ? "PLAY" : "PAUSE";
+        playToggle.setAttribute("aria-label", video.paused ? "播放" : "暂停");
+      };
+
+      const updateVolumeState = () => {
+        const silent = video.muted || video.volume === 0;
+        volumeSlider.value = silent ? 0 : video.volume;
+        volumeToggle.textContent = silent ? "SOUND" : "MUTE";
+        volumeToggle.setAttribute("aria-label", silent ? "恢复声音" : "静音");
+        volumeToggle.title = silent ? "恢复声音" : "静音";
+      };
+
+      const openFolder = () => {
+        document.querySelector(".folder")?.remove();
+        const folder = document.createElement("section");
+        folder.className = "folder";
+        folder.innerHTML = `
+          <button class="close" type="button" aria-label="关闭">×</button>
+          <div class="folder-paper">
+            <p>制作花絮预览 / PRODUCTION PROCESS</p>
+            <h2>丹港风云录 001 制作资料页</h2>
+            <div class="process-grid">
+              <article><span>01</span><h3>手绘草图</h3><p>角色轮廓、制服比例与丹港警务处视觉基调。</p></article>
+              <article><span>02</span><h3>AI 静态设定</h3><p>城市雨夜、港口结构、旧电视新闻质感的画面测试。</p></article>
+              <article><span>03</span><h3>最终影片镜头</h3><p>关键镜头生成、配乐、音效、字幕与剪辑合成。</p></article>
+            </div>
+          </div>
+        `;
+        stage.appendChild(folder);
+        folder.querySelector(".close").addEventListener("click", () => folder.remove());
+      };
+
+      const showVideo = () => {
+        screen.classList.add("has-video");
+      };
+
+      const playVideo = () => {
+        stopBackgroundMusic();
+        showVideo();
+        video.play().catch(() => showToast("点击电视屏幕即可开始播放。"));
+      };
+
+      const ejectVideo = () => {
+        video.pause();
+        video.currentTime = 0;
+        screen.classList.remove("has-video");
+        screenCopy.textContent = "等待接入画面";
+        screenSub.textContent = "STANDBY FOR ARCHIVE SIGNAL";
+      };
+
+      if (startInArchive) {
+        ejectVideo();
+        startBackgroundMusic();
+      }
+
+      window.addEventListener("pageshow", () => {
+        if (startInArchive) {
+          ejectVideo();
+          startBackgroundMusic();
+        }
+      });
+
+      musicToggle.addEventListener("click", () => {
+        if (archiveBgm.paused) {
+          video.pause();
+          startBackgroundMusic();
+        } else {
+          archiveBgm.pause();
+        }
+      });
+
+      musicVolume.addEventListener("input", () => {
+        archiveBgm.volume = Number(musicVolume.value);
+      });
+
+      musicChange.addEventListener("click", () => musicFile.click());
+      musicFile.addEventListener("change", () => {
+        const [file] = musicFile.files;
+        if (!file) return;
+        if (localMusicUrl) URL.revokeObjectURL(localMusicUrl);
+        localMusicUrl = URL.createObjectURL(file);
+        archiveBgm.src = localMusicUrl;
+        musicTitle.textContent = file.name.replace(/\.[^.]+$/, "");
+        video.pause();
+        startBackgroundMusic();
+      });
+
+      archiveBgm.addEventListener("play", updateMusicState);
+      archiveBgm.addEventListener("pause", updateMusicState);
+      updateMusicState();
+
+      insert.addEventListener("click", () => {
+        insert.classList.add("is-pressed");
+        screenCopy.textContent = "信号接入中";
+        screenSub.textContent = "TRACKING / PLEASE STAND BY";
+        playVideo();
+        setTimeout(() => {
+          insert.classList.remove("is-pressed");
+          showToast("丹港风云录 001 / 信号已接入");
+        }, 650);
+      });
+
+      document.querySelectorAll("[data-control]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const control = button.dataset.control;
+          if (control === "REC") showToast("当前档案禁止覆盖录制。");
+          else if (control === "EJECT") {
+            ejectVideo();
+            showToast("录像带已退出。");
+          } else if (control === "PLAY") {
+            playVideo();
+            showToast("播放 / PLAY");
+          } else if (control === "PAUSE") {
+            video.pause();
+            showToast("暂停 / PAUSE");
+          } else if (control === "STOP") {
+            video.pause();
+            video.currentTime = 0;
+            showToast("停止 / STOP");
+          } else if (control === "REW") {
+            video.currentTime = Math.max(0, video.currentTime - 10);
+            showToast("倒带 10 秒 / REW");
+          } else if (control === "FF") {
+            video.currentTime = Math.min(video.duration || Infinity, video.currentTime + 10);
+            showToast("快进 10 秒 / FF");
+          }
+        });
+      });
+
+      video.addEventListener("click", () => {
+        if (video.paused) playVideo();
+        else video.pause();
+      });
+
+      playToggle.addEventListener("click", () => {
+        if (video.paused) playVideo();
+        else video.pause();
+      });
+
+      progressSlider.addEventListener("pointerdown", () => { isScrubbing = true; });
+      progressSlider.addEventListener("input", () => {
+        if (!Number.isFinite(video.duration)) return;
+        video.currentTime = Number(progressSlider.value);
+        currentTimeLabel.textContent = formatVideoTime(video.currentTime);
+      });
+      const finishScrubbing = () => { isScrubbing = false; updateTimeline(); };
+      progressSlider.addEventListener("change", finishScrubbing);
+      progressSlider.addEventListener("pointerup", finishScrubbing);
+      progressSlider.addEventListener("pointercancel", finishScrubbing);
+
+      volumeSlider.addEventListener("input", () => {
+        const volume = Number(volumeSlider.value);
+        video.volume = volume;
+        video.muted = volume === 0;
+        if (volume > 0) lastVolume = volume;
+      });
+
+      volumeToggle.addEventListener("click", () => {
+        if (video.muted || video.volume === 0) {
+          video.muted = false;
+          video.volume = lastVolume || 0.7;
+        } else {
+          lastVolume = video.volume;
+          video.muted = true;
+        }
+      });
+
+      video.addEventListener("loadedmetadata", updateTimeline);
+      video.addEventListener("durationchange", updateTimeline);
+      video.addEventListener("timeupdate", updateTimeline);
+      video.addEventListener("play", () => {
+        stopBackgroundMusic();
+        updatePlayState();
+      });
+      video.addEventListener("pause", updatePlayState);
+      video.addEventListener("volumechange", updateVolumeState);
+      fullscreenControls.addEventListener("click", (event) => event.stopPropagation());
+
+      video.addEventListener("error", () => {
+        screen.classList.remove("has-video");
+        screenCopy.textContent = "信号接入失败";
+        screenSub.textContent = "ARCHIVE SIGNAL UNAVAILABLE";
+        showToast("视频暂时无法加载，请稍后重试。");
+      });
+
+      const toggleFullscreen = async () => {
+        try {
+          if (document.fullscreenElement || document.webkitFullscreenElement) {
+            const exitFullscreen = document.exitFullscreen || document.webkitExitFullscreen;
+            await exitFullscreen.call(document);
+          } else {
+            const requestFullscreen = screen.requestFullscreen || screen.webkitRequestFullscreen;
+            await requestFullscreen.call(screen);
+          }
+        } catch {
+          showToast("当前浏览器未允许全屏播放。");
+        }
+      };
+
+      fullscreenButton.addEventListener("click", async (event) => {
+        event.stopPropagation();
+        await toggleFullscreen();
+      });
+      fullscreenExit.addEventListener("click", toggleFullscreen);
+
+      document.querySelectorAll("[aria-label$='003'], [aria-label$='004'], [aria-label$='005'], [aria-label$='006'], [aria-label$='007']").forEach((button) => {
+        button.addEventListener("click", () => showToast("该录像尚未开放调取。"));
+      });
+
+      document.querySelector(".behind-preview-hit").addEventListener("click", openFolder);
+
+      const physicalButtonSound = (() => {
+        let audioContext;
+
+        const getContext = () => {
+          if (!audioContext) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) return null;
+            audioContext = new AudioContextClass();
+          }
+          if (audioContext.state === "suspended") audioContext.resume().catch(() => {});
+          return audioContext;
+        };
+
+        const strike = (isRelease) => {
+          const context = getContext();
+          if (!context) return;
+
+          const now = context.currentTime + 0.002;
+          const duration = isRelease ? 0.055 : 0.075;
+          const output = context.createGain();
+          output.gain.setValueAtTime(isRelease ? 0.065 : 0.095, now);
+          output.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+          output.connect(context.destination);
+
+          const body = context.createOscillator();
+          body.type = isRelease ? "triangle" : "square";
+          body.frequency.setValueAtTime(isRelease ? 210 : 135, now);
+          body.frequency.exponentialRampToValueAtTime(isRelease ? 125 : 72, now + duration);
+          body.connect(output);
+          body.start(now);
+          body.stop(now + duration);
+
+          const noiseLength = Math.max(1, Math.floor(context.sampleRate * duration));
+          const noiseBuffer = context.createBuffer(1, noiseLength, context.sampleRate);
+          const noiseData = noiseBuffer.getChannelData(0);
+          for (let index = 0; index < noiseLength; index += 1) {
+            const decay = 1 - index / noiseLength;
+            noiseData[index] = (Math.random() * 2 - 1) * decay;
+          }
+
+          const noise = context.createBufferSource();
+          const filter = context.createBiquadFilter();
+          const noiseGain = context.createGain();
+          noise.buffer = noiseBuffer;
+          filter.type = "bandpass";
+          filter.frequency.value = isRelease ? 1850 : 1120;
+          filter.Q.value = isRelease ? 1.1 : 0.72;
+          noiseGain.gain.value = isRelease ? 0.32 : 0.46;
+          noise.connect(filter);
+          filter.connect(noiseGain);
+          noiseGain.connect(output);
+          noise.start(now);
+          noise.stop(now + duration);
+        };
+
+        return {
+          press: () => strike(false),
+          release: () => strike(true),
+        };
+      })();
+
+      const physicalControlSelector = "button, a[href], [role='button']";
+      let pressedPhysicalControl = null;
+
+      const getPhysicalControl = (target) => {
+        const control = target.closest?.(physicalControlSelector);
+        if (!control || control.matches(":disabled, [aria-disabled='true'], [data-no-mechanical-sfx]")) return null;
+        return control;
+      };
+
+      const pressPhysicalControl = (control) => {
+        if (!control || pressedPhysicalControl) return;
+        pressedPhysicalControl = control;
+        if (control.matches("button")) control.classList.add("physical-press");
+        physicalButtonSound.press();
+      };
+
+      const releasePhysicalControl = () => {
+        if (!pressedPhysicalControl) return;
+        pressedPhysicalControl.classList.remove("physical-press");
+        pressedPhysicalControl = null;
+        physicalButtonSound.release();
+      };
+
+      document.addEventListener("pointerdown", (event) => {
+        if (event.button !== 0) return;
+        pressPhysicalControl(getPhysicalControl(event.target));
+      }, true);
+      document.addEventListener("pointerup", releasePhysicalControl, true);
+      document.addEventListener("pointercancel", releasePhysicalControl, true);
+      window.addEventListener("blur", releasePhysicalControl);
+
+      document.addEventListener("keydown", (event) => {
+        if (event.repeat || (event.key !== "Enter" && event.key !== " ")) return;
+        pressPhysicalControl(getPhysicalControl(event.target));
+      }, true);
+      document.addEventListener("keyup", (event) => {
+        if (event.key === "Enter" || event.key === " ") releasePhysicalControl();
+      }, true);
+
+      updateTimeline();
+      updatePlayState();
+      updateVolumeState();
+
+    </script>
+    <script src="./danhabor-boarding-intro.js"></script>
+    <script src="./danhabor-music-player.js?v=20260722-2"></script>
+  </body>
+</html>

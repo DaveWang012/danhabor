@@ -1,0 +1,431 @@
+:root {
+  --dmp-ink: #d9cfb9;
+  --dmp-muted: #8e897d;
+  --dmp-line: rgba(154, 139, 110, 0.52);
+  --dmp-amber: #b47a31;
+  --dmp-red: #a6382d;
+}
+
+.danhabor-music-player {
+  position: fixed;
+  top: auto;
+  right: max(12px, env(safe-area-inset-right));
+  bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 1400;
+  width: min(302px, calc(100vw - 24px));
+  color: var(--dmp-ink);
+  font-family: "Archive Eva Mincho", "Songti SC", SimSun, serif;
+  letter-spacing: 0;
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.danhabor-music-player.dmp-on-preview {
+  top: max(12px, env(safe-area-inset-top));
+  bottom: auto;
+}
+
+.danhabor-music-player.dmp-hidden {
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+
+.dmp-console {
+  position: relative;
+  border: 1px solid rgba(125, 113, 91, 0.72);
+  border-radius: 3px;
+  background: rgba(5, 7, 7, 0.95);
+  box-shadow:
+    inset 0 0 0 2px #020303,
+    inset 0 0 0 3px rgba(137, 120, 88, 0.16),
+    0 8px 24px rgba(0, 0, 0, 0.48);
+  overflow: hidden;
+}
+
+.dmp-console::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: repeating-linear-gradient(180deg, transparent 0 3px, rgba(214, 202, 178, 0.018) 3px 4px);
+  pointer-events: none;
+}
+
+.dmp-mini {
+  position: relative;
+  z-index: 1;
+  min-height: 48px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 7px;
+}
+
+.dmp-button {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(152, 137, 108, 0.52);
+  border-radius: 2px;
+  color: rgba(230, 219, 197, 0.92);
+  background: #101210;
+  font: 700 13px/1 Arial, sans-serif;
+  cursor: pointer;
+}
+
+.dmp-button:hover,
+.dmp-button:focus-visible {
+  color: #17130e;
+  background: #ded2ba;
+  outline: 1px solid rgba(214, 163, 82, 0.82);
+  outline-offset: 2px;
+}
+
+.dmp-play {
+  position: relative;
+}
+
+.dmp-play::after {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 4px;
+  height: 4px;
+  content: "";
+  border-radius: 50%;
+  background: #514d43;
+}
+
+.dmp-is-playing .dmp-play::after {
+  background: var(--dmp-amber);
+  box-shadow: 0 0 5px rgba(214, 154, 66, 0.8);
+}
+
+.dmp-mini-readout {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 15px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 6px;
+  align-items: center;
+}
+
+.dmp-disc {
+  grid-row: 1 / 3;
+  width: 15px;
+  height: 15px;
+  border: 1px solid rgba(183, 163, 125, 0.62);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #c08a3d 0 10%, #111 11% 28%, #5d584d 29% 31%, #0a0b0a 32% 100%);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.75);
+}
+
+.dmp-is-playing .dmp-disc {
+  animation: dmpSpin 7s linear infinite;
+}
+
+.dmp-label,
+.dmp-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dmp-label {
+  color: rgba(145, 137, 121, 0.66);
+  font: 8px/1 "Courier New", monospace;
+}
+
+.dmp-title {
+  color: rgba(229, 218, 196, 0.9);
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.dmp-panel {
+  position: relative;
+  z-index: 1;
+  max-height: min(540px, calc(100vh - 82px - env(safe-area-inset-top)));
+  border-top: 1px solid rgba(145, 130, 101, 0.34);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.dmp-panel[hidden] {
+  display: none;
+}
+
+.dmp-now {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px;
+  background: rgba(14, 17, 17, 0.8);
+}
+
+.dmp-cover {
+  width: 44px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(148, 131, 100, 0.48);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #c3924b 0 7%, #0b0c0b 8% 29%, transparent 30%),
+    repeating-radial-gradient(circle, #171817 0 1px, #090a09 2px 4px);
+  box-shadow: inset 0 0 0 1px rgba(12, 10, 7, 0.8), 0 2px 8px rgba(0, 0, 0, 0.46);
+}
+
+.dmp-cover::after {
+  width: 8px;
+  height: 8px;
+  content: "";
+  border: 1px solid rgba(206, 181, 137, 0.74);
+  border-radius: 50%;
+}
+
+.dmp-is-playing .dmp-cover {
+  animation: dmpSpin 9s linear infinite;
+}
+
+.dmp-now-copy {
+  min-width: 0;
+  align-self: center;
+}
+
+.dmp-now-copy strong,
+.dmp-now-copy span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dmp-now-copy strong {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.dmp-now-copy span {
+  margin-top: 4px;
+  color: var(--dmp-muted);
+  font: 10px/1.2 "Courier New", monospace;
+}
+
+.dmp-timeline,
+.dmp-volume-row {
+  display: grid;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+}
+
+.dmp-timeline {
+  grid-template-columns: 35px minmax(0, 1fr) 35px;
+  padding-top: 10px;
+}
+
+.dmp-time {
+  color: rgba(165, 156, 139, 0.72);
+  font: 9px/1 "Courier New", monospace;
+}
+
+.dmp-time:last-child {
+  text-align: right;
+}
+
+.dmp-range {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 18px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.dmp-range::-webkit-slider-runnable-track {
+  height: 2px;
+  border-radius: 1px;
+  background: rgba(160, 145, 116, 0.48);
+}
+
+.dmp-range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 8px;
+  height: 8px;
+  margin-top: -3px;
+  border: 1px solid #d3a65f;
+  border-radius: 50%;
+  background: #92652c;
+  box-shadow: 0 0 4px rgba(209, 152, 68, 0.48);
+}
+
+.dmp-range::-moz-range-track {
+  height: 2px;
+  border: 0;
+  border-radius: 1px;
+  background: rgba(160, 145, 116, 0.48);
+}
+
+.dmp-range::-moz-range-thumb {
+  width: 8px;
+  height: 8px;
+  border: 1px solid #d3a65f;
+  border-radius: 50%;
+  background: #92652c;
+}
+
+.dmp-controls {
+  display: grid;
+  grid-template-columns: repeat(5, 34px);
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 12px;
+}
+
+.dmp-controls .dmp-button {
+  font-size: 11px;
+}
+
+.dmp-volume-row {
+  grid-template-columns: 34px minmax(0, 1fr) 38px;
+  padding-bottom: 10px;
+}
+
+.dmp-mode-label {
+  color: rgba(163, 153, 135, 0.72);
+  font: 8px/1 "Courier New", monospace;
+  text-align: right;
+}
+
+.dmp-status {
+  min-height: 16px;
+  margin: 0;
+  padding: 0 12px 6px;
+  color: rgba(193, 158, 101, 0.78);
+  font: 9px/1.25 "Courier New", monospace;
+}
+
+.dmp-playlist {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgba(145, 130, 101, 0.3);
+  list-style: none;
+}
+
+.dmp-track-button {
+  width: 100%;
+  min-height: 48px;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 36px;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border: 0;
+  border-bottom: 1px solid rgba(126, 116, 96, 0.2);
+  color: rgba(204, 196, 178, 0.78);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dmp-track-button:hover,
+.dmp-track-button:focus-visible,
+.dmp-track-button[aria-current="true"] {
+  color: #eee4d0;
+  background: rgba(137, 103, 54, 0.18);
+  outline: 0;
+}
+
+.dmp-track-index,
+.dmp-track-duration {
+  color: rgba(149, 141, 126, 0.62);
+  font: 9px/1 "Courier New", monospace;
+}
+
+.dmp-track-duration {
+  text-align: right;
+}
+
+.dmp-track-copy {
+  min-width: 0;
+}
+
+.dmp-track-copy strong,
+.dmp-track-copy span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dmp-track-copy strong {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dmp-track-copy span {
+  margin-top: 3px;
+  color: rgba(151, 143, 128, 0.65);
+  font: 9px/1 "Courier New", monospace;
+}
+
+.archive-bgm,
+.music-console {
+  display: none !important;
+}
+
+@keyframes dmpSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 700px) {
+  .danhabor-music-player {
+    top: auto;
+    right: max(10px, env(safe-area-inset-right));
+    bottom: max(10px, env(safe-area-inset-bottom));
+    width: min(326px, calc(100vw - 20px));
+  }
+
+  .danhabor-music-player.dmp-on-preview {
+    top: auto;
+    bottom: max(10px, env(safe-area-inset-bottom));
+  }
+
+  .dmp-mini {
+    min-height: 54px;
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+  }
+
+  .dmp-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .dmp-panel {
+    max-height: min(560px, calc(100vh - 82px - env(safe-area-inset-bottom)));
+  }
+
+  .dmp-controls {
+    grid-template-columns: repeat(5, 44px);
+  }
+
+  .dmp-volume-row {
+    grid-template-columns: 44px minmax(0, 1fr) 46px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .danhabor-music-player,
+  .dmp-disc,
+  .dmp-cover {
+    transition-duration: 80ms;
+    animation: none !important;
+  }
+}

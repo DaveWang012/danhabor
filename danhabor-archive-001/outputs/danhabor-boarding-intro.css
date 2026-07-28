@@ -1,0 +1,303 @@
+:root {
+  --boarding-ease: cubic-bezier(0.22, 0.72, 0.18, 1);
+}
+
+.boarding-intro {
+  --tear-progress: 0;
+  position: fixed;
+  inset: 0;
+  /* This entrance must stay above the existing opening film until the stub is torn. */
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #090a0a;
+  color: #d9cfbb;
+  isolation: isolate;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.boarding-intro[hidden] {
+  display: none !important;
+}
+
+.boarding-background-layer {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(46, 48, 45, 0.34), transparent 52%),
+    linear-gradient(180deg, #111313, #070808 68%, #030404);
+}
+
+.boarding-background-layer::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  opacity: 0.18;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+.boarding-background-layer::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: radial-gradient(circle at center, transparent 42%, rgba(0, 0, 0, 0.72) 100%);
+  pointer-events: none;
+}
+
+.boarding-pass-stage {
+  position: relative;
+  width: min(100vw, calc(100vh * 1.776833));
+  aspect-ratio: 1672 / 941;
+  touch-action: none;
+  contain: layout paint style;
+}
+
+.boarding-pass-ticket {
+  position: absolute;
+  inset: 0;
+  animation: boardingFloat 4.8s ease-in-out infinite;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.boarding-pass-main,
+.boarding-pass-stub {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  background-image: url("../public/assets/dangang-boarding-pass.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  filter: drop-shadow(0 1.4cqw 1.55cqw rgba(0, 0, 0, 0.55));
+  will-change: transform, filter;
+}
+
+.boarding-pass-main {
+  z-index: 2;
+  clip-path: inset(8.82% 28.88% 7.76% 13.16%);
+  pointer-events: none;
+}
+
+.boarding-pass-stub {
+  --stub-x: 0px;
+  --stub-y: 0px;
+  --stub-rotation: 0deg;
+  z-index: 5;
+  clip-path: inset(8.82% 13.16% 7.76% 71.12%);
+  transform: translate3d(var(--stub-x), var(--stub-y), 0) rotate(var(--stub-rotation));
+  transform-origin: 71.12% 50%;
+  cursor: grab;
+  transition: filter 220ms ease, transform 340ms var(--boarding-ease);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.boarding-intro.is-hovering .boarding-pass-stub {
+  filter: brightness(1.045) drop-shadow(0 1.6cqw 1.7cqw rgba(0, 0, 0, 0.62));
+  transform: translate3d(0.34cqw, -0.08cqw, 0) rotate(0.35deg) scale(1.012);
+}
+
+.boarding-intro.is-dragging .boarding-pass-ticket {
+  animation-play-state: paused;
+}
+
+.boarding-intro.is-dragging .boarding-pass-stub {
+  cursor: grabbing;
+  transition: filter 120ms ease;
+}
+
+.boarding-interaction-hint {
+  position: absolute;
+  left: 73.55%;
+  top: 45.2%;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  gap: 0.5cqw;
+  color: rgba(239, 226, 199, 0.72);
+  font-family: "Archive Eva Mincho", "Songti SC", serif;
+  font-size: 0.74cqw;
+  letter-spacing: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  opacity: 0.56;
+  transform: translateX(0);
+  transition: opacity 220ms ease, transform 220ms ease;
+  pointer-events: none;
+}
+
+.boarding-interaction-hint b {
+  font-family: Arial, sans-serif;
+  font-size: 1.1cqw;
+  font-weight: 400;
+}
+
+.boarding-intro.is-hovering .boarding-interaction-hint {
+  opacity: 0.96;
+  transform: translateX(0.42cqw);
+}
+
+.boarding-intro.is-dragging .boarding-interaction-hint,
+.boarding-intro.is-tearing .boarding-interaction-hint {
+  opacity: 0;
+}
+
+.tear-edge {
+  position: absolute;
+  top: 9.1%;
+  z-index: 6;
+  width: 0.72%;
+  height: 82.65%;
+  opacity: calc(0.12 + var(--tear-progress) * 0.88);
+  background:
+    linear-gradient(90deg, rgba(238, 224, 196, 0.86), rgba(148, 116, 79, 0.18) 54%, transparent),
+    repeating-linear-gradient(180deg, transparent 0 0.58cqw, rgba(245, 231, 204, 0.8) 0.62cqw 0.78cqw, transparent 0.82cqw 1.28cqw);
+  filter: drop-shadow(0 0 0.28cqw rgba(231, 215, 184, 0.36));
+  clip-path: polygon(50% 0, 90% 2%, 32% 4%, 78% 7%, 24% 10%, 84% 13%, 30% 17%, 74% 21%, 18% 25%, 82% 29%, 26% 34%, 76% 39%, 20% 44%, 86% 49%, 28% 54%, 80% 60%, 18% 66%, 78% 72%, 26% 79%, 84% 85%, 34% 91%, 74% 96%, 46% 100%, 0 100%, 0 0);
+  pointer-events: none;
+}
+
+.tear-edge-main {
+  left: 70.72%;
+}
+
+.tear-edge-stub {
+  left: 70.98%;
+  transform: scaleX(-1);
+  transform-origin: center;
+}
+
+.boarding-home-screen {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.65rem;
+  color: rgba(224, 215, 196, 0.88);
+  background:
+    linear-gradient(180deg, rgba(8, 13, 15, 0.55), rgba(4, 8, 10, 0.88)),
+    radial-gradient(circle at 50% 46%, #23333a, #070a0c 62%);
+  opacity: 0.04;
+  filter: blur(14px);
+  transform: translateY(1.2%) scale(1.02);
+  transition: opacity 120ms linear, filter 120ms linear, transform 120ms linear;
+  pointer-events: none;
+}
+
+.boarding-home-screen p {
+  margin: 0;
+  color: rgba(159, 153, 139, 0.68);
+  font-family: "Courier New", monospace;
+  font-size: clamp(10px, 0.75vw, 14px);
+}
+
+.boarding-home-screen h1 {
+  margin: 0.5rem 0;
+  font-size: clamp(42px, 6vw, 108px);
+  letter-spacing: 0;
+}
+
+.boarding-home-screen h1 span {
+  display: block;
+  color: rgba(164, 83, 61, 0.82);
+  font-family: "Courier New", monospace;
+  font-size: 0.22em;
+  text-align: center;
+}
+
+.boarding-home-enter {
+  margin-top: 1.4rem;
+  padding: 0.72rem 1.35rem;
+  border: 1px solid rgba(172, 161, 139, 0.38);
+  font-size: 0.78rem;
+}
+
+.boarding-access-note {
+  position: absolute;
+  left: 50%;
+  bottom: 2.8%;
+  z-index: 8;
+  margin: 0;
+  color: rgba(148, 141, 127, 0.42);
+  font-family: "Courier New", monospace;
+  font-size: clamp(9px, 0.62vw, 12px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.tear-particles {
+  position: absolute;
+  left: 71.05%;
+  top: 11%;
+  z-index: 9;
+  width: 1%;
+  height: 78%;
+  pointer-events: none;
+}
+
+.tear-particles i {
+  position: absolute;
+  left: 50%;
+  width: var(--particle-size, 4px);
+  height: calc(var(--particle-size, 4px) * 0.44);
+  background: rgba(232, 216, 186, 0.86);
+  opacity: 0;
+}
+
+.boarding-intro.is-tearing .tear-particles i {
+  animation: boardingPaperFleck var(--particle-duration, 520ms) ease-out var(--particle-delay, 0ms) both;
+}
+
+.boarding-intro.is-tearing .boarding-pass-main {
+  animation: boardingMainExit 760ms var(--boarding-ease) 520ms both;
+}
+
+.boarding-intro.is-tearing .boarding-access-note {
+  opacity: 0;
+  transition: opacity 240ms ease;
+}
+
+.boarding-intro.is-completed {
+  animation: boardingIntroExit 760ms ease 650ms both;
+  pointer-events: none;
+}
+
+@keyframes boardingFloat {
+  0%, 100% { transform: translate3d(0, -2px, 0); }
+  50% { transform: translate3d(0, 3px, 0); }
+}
+
+@keyframes boardingMainExit {
+  from { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  to { opacity: 0; transform: translate3d(-1.4%, -1.8%, 0) scale(0.972); }
+}
+
+@keyframes boardingIntroExit {
+  0% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+@keyframes boardingPaperFleck {
+  0% { opacity: 0; transform: translate3d(0, var(--particle-y, 0), 0) rotate(0); }
+  18% { opacity: 0.82; }
+  100% { opacity: 0; transform: translate3d(var(--particle-x, 2.4cqw), calc(var(--particle-y, 0) + 0.8cqw), 0) rotate(var(--particle-rotate, 120deg)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boarding-pass-ticket { animation: none; }
+  .boarding-pass-stub,
+  .boarding-home-screen,
+  .boarding-interaction-hint { transition-duration: 80ms; }
+}
