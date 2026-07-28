@@ -27,8 +27,8 @@ export const tapes: Tape[] = [
       "新人警探与搭档深入调查一系列离奇案件，",
       "逐步揭开城市背后隐藏的真相与巨大阴谋。",
     ],
-    cover: "/assets/danhabor-001-cover.jpg",
-    video: "/assets/danhabor-001.mp4",
+    cover: "assets/danhabor-001-cover.jpg",
+    video: "assets/danhabor-001.mp4",
   },
   {
     id: "002",
